@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Presença | Casamento João & Maria</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <h1>Confirmação de Presença</h1>
+        <p>Por favor, confirme sua presença no nosso casamento!</p>
+    </header>
+    
+    <section class="form-section">
+        <form id="confirmacao-form">
+            <label for="convidados">Escolha os nomes dos convidados:</label>
+            <select id="convidados" name="convidados[]" multiple="multiple" required>
+                <!-- Opções serão carregadas dinamicamente via API -->
+            </select>
+
+            <label for="presenca">Você vai comparecer?</label>
+            <select id="presenca" name="presenca" required>
+                <option value="sim">Sim</option>
+                <option value="nao">Não</option>
+            </select>
+
+            <button type="submit">Confirmar Presença</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>Para mais informações, entre em contato: <a href="mailto:contato@casamento.com">contato@casamento.com</a></p>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            // Ativa o Select2 para o campo de múltipla seleção
+            $('#convidados').select2({
+                placeholder: "Pesquise e selecione os convidados",
+                allowClear: true
+            });
+
+            // Carrega os nomes dos convidados via API
+            fetch('/api/get-convidados')
+                .then(response => response.json())
+                .then(data => {
+                    // Preenche o select com as opções retornadas pela API
+                    const convidadosSelect = $('#convidados');
+                    data.forEach(convidado => {
+                        convidadosSelect.append(new Option(convidado.name, convidado.id));
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar convidados:', error);
+                });
+
+            // Lida com o envio do formulário via AJAX
+            $('#confirmacao-form').submit(function(event) {
+                event.preventDefault(); // Impede o envio padrão do formulário
+
+                const convidadosSelecionados = $('#convidados').val();
+                const presenca = $('#presenca').val();
+
+                // Faz a requisição POST para enviar os dados de confirmação
+                $.ajax({
+                    url: '/api/post-confirmacao',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        convidados: convidadosSelecionados,
+                        presenca: presenca
+                    }),
+                    success: function(response) {
+                        alert('Confirmação enviada com sucesso!');
+                    },
+                    error: function(error) {
+                        console.error('Erro ao enviar confirmação:', error);
+                        alert('Ocorreu um erro ao enviar a confirmação. Tente novamente.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
