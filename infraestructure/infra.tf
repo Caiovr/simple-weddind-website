@@ -8,34 +8,14 @@ provider "aws" {
 }
 
 # S3 Bucket for Static Website
-resource "aws_s3_bucket" "static_website" {
-  bucket = "wedding-site-${random_id.bucket_id.hex}"
-  acl    = "public-read"
-
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
-  }
+data  "aws_s3_bucket" "static_website" {
+  bucket = "project-simple-wedding-website"
 }
 
-resource "aws_s3_bucket_object" "index_html" {
-  bucket = aws_s3_bucket.static_website.id
-  key    = "index.html"
-  source = "index.html" # Replace with your local file path
-  content_type = "text/html"
-}
-
-resource "aws_s3_bucket_object" "error_html" {
-  bucket = aws_s3_bucket.static_website.id
-  key    = "error.html"
-  source = "error.html" # Replace with your local file path
-  content_type = "text/html"
-}
-
-resource "aws_s3_bucket_object" "sqlite_db" {
-  bucket = aws_s3_bucket.static_website.id
-  key    = "database/confirmations.db"
-  source = "confirmations.db" # Replace with your SQLite file path
+# S3 Private Bucket for Static Website
+resource "aws_s3_bucket" "sqlite_db_bucket" {
+  bucket = "sqlite-db-project-sww"
+  acl    = "private"
 }
 
 resource "random_id" "bucket_id" {
@@ -84,7 +64,10 @@ resource "aws_iam_policy" "lambda_policy" {
           "s3:GetObject",
           "s3:PutObject"
         ],
-        Resource = "${aws_s3_bucket.static_website.arn}/*"
+        Resource = [
+          "${data.aws_s3_bucket.static_website.arn}/*", 
+          "${aws_s3_bucket.sqlite_db_bucket.arn}/*"
+        ]
       },
       {
         Effect = "Allow",
@@ -104,43 +87,50 @@ resource "aws_iam_role_policy_attachment" "lambda_role_attach" {
   policy_arn = aws_iam_policy.lambda_policy.arn
 }
 
+data "archive_file" "lambda_save_confirmation_zip" {
+  type         = "zip"
+  source_file  = "${path.module}/../lambda/saveConfirmation.py"
+  output_path  = "${path.module}/../lambda/saveConfirmation.zip"
+}
+
 # Lambda Function
 resource "aws_lambda_function" "confirmation_handler" {
   function_name = "wedding-confirmation-handler"
   role          = aws_iam_role.lambda_role.arn
   runtime       = "python3.9"
   handler       = "lambda_function.lambda_handler"
-  filename      = "lambda_function.zip" # Replace with your Lambda deployment package
+  filename      = "../lambda/saveConfirmation.zip" # Replace with your Lambda deployment package
 
   environment {
     variables = {
-      S3_BUCKET = aws_s3_bucket.static_website.id
+      S3_BUCKET = data.aws_s3_bucket.static_website.id
       SQS_QUEUE = aws_sqs_queue.confirmation_queue.url
+      DB_NAME = "wedding.db"
     }
   }
 }
 
 # API Gateway
-resource "aws_apigatewayv2_api" "confirmation_api" {
-  name          = "Wedding Confirmation API"
+resource "aws_apigatewayv2_api" "wedding_website_api" {
+  name          = "Wedding Website API"
   protocol_type = "HTTP"
 }
 
 resource "aws_apigatewayv2_integration" "lambda_integration" {
-  api_id             = aws_apigatewayv2_api.confirmation_api.id
+  api_id             = aws_apigatewayv2_api.wedding_website_api.id
   integration_type   = "AWS_PROXY"
   integration_uri    = aws_lambda_function.confirmation_handler.invoke_arn
   payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "post_confirm" {
-  api_id    = aws_apigatewayv2_api.confirmation_api.id
+  api_id    = aws_apigatewayv2_api.wedding_website_api.id
   route_key = "POST /confirm"
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
 resource "aws_apigatewayv2_stage" "default_stage" {
-  api_id      = aws_apigatewayv2_api.confirmation_api.id
+  api_id      = aws_apigatewayv2_api.wedding_website_api.id
   name        = "$default"
   auto_deploy = true
 }
@@ -151,5 +141,5 @@ resource "aws_lambda_permission" "api_gateway_permission" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.confirmation_handler.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.confirmation_api.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.wedding_website_api.execution_arn}/*/*"
 }

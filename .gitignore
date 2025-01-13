@@ -1,0 +1,12 @@
+# Ignore all .csv, .xlsx, .xls, .exe, .pdf, and .log files
+*.csv
+*.xlsx
+*.xls
+*.exe
+*.pdf
+*.log
+*.zip
+*.db
+
+# Ignore some folders
+infraestructure/.terraform/
