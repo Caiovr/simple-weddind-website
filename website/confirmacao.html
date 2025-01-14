@@ -45,13 +45,13 @@
             });
 
             // Carrega os nomes dos convidados via API
-            fetch('/api/get-convidados')
+            fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-convidados')
                 .then(response => response.json())
                 .then(data => {
                     // Preenche o select com as opções retornadas pela API
                     const convidadosSelect = $('#convidados');
                     data.forEach(convidado => {
-                        convidadosSelect.append(new Option(convidado.name, convidado.id));
+                        convidadosSelect.append(new Option(convidado.convidado, convidado.id));
                     });
                 })
                 .catch(error => {
@@ -61,16 +61,18 @@
             // Lida com o envio do formulário via AJAX
             $('#confirmacao-form').submit(function(event) {
                 event.preventDefault(); // Impede o envio padrão do formulário
-
+                
+                const ids = $('#id').val();
                 const convidadosSelecionados = $('#convidados').val();
                 const presenca = $('#presenca').val();
 
                 // Faz a requisição POST para enviar os dados de confirmação
                 $.ajax({
-                    url: '/api/post-confirmacao',
+                    url: 'https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-confirmacao',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
+                        ids: ids,
                         convidados: convidadosSelecionados,
                         presenca: presenca
                     }),

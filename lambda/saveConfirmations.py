@@ -11,28 +11,33 @@ def lambda_handler(event, context):
 
     # Baixa o arquivo do S3
     s3 = boto3.client('s3')
-    s3.download_file(s3_bucket, f'database/{db_name}', db_file)
+    s3.download_file(s3_bucket, db_name, db_file)
 
     # Parseia os dados da requisição
-    body = json.loads(event['body'])
-    convidados = body['convidados']
-    presenca = body['presenca']
+    body = event
+    ids = body["ids"]
+    presencas = body["presenca"]
+    timestamps = body["timestamp"]
 
     # Conecta ao banco de dados e salva a confirmação
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
 
-    for convidado_id in convidados:
+    for convidado_id, presenca, timestamp in zip(ids, presencas, timestamps):
+        print(convidado_id, presenca, timestamp)
         cursor.execute(
-            "INSERT INTO confirmacoes (convidado_id, presenca) VALUES (?, ?)",
-            (convidado_id, presenca)
+            """
+            INSERT INTO confirmacoes (convidado_id, presenca, timestamp) 
+            VALUES (?, ?, ?)
+            """,
+            (convidado_id, presenca, timestamp),
         )
 
     conn.commit()
     conn.close()
 
     # Atualiza o arquivo no S3
-    s3.upload_file(db_file, s3_bucket, f'database/{db_name}')
+    s3.upload_file(db_file, s3_bucket, db_name)
 
     return {
         "statusCode": 200,
