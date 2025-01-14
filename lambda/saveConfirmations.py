@@ -14,23 +14,23 @@ def lambda_handler(event, context):
     s3.download_file(s3_bucket, db_name, db_file)
 
     # Parseia os dados da requisição
-    body = event
+    print(event)
+    body = json.loads(event['Records'][0]['body'])
     ids = body["ids"]
     presencas = body["presenca"]
-    timestamps = body["timestamp"]
+    #timestamps = body["timestamp"]
 
     # Conecta ao banco de dados e salva a confirmação
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
 
-    for convidado_id, presenca, timestamp in zip(ids, presencas, timestamps):
-        print(convidado_id, presenca, timestamp)
+    for convidado_id, presenca in zip(ids, presencas):
         cursor.execute(
             """
-            INSERT INTO confirmacoes (convidado_id, presenca, timestamp) 
-            VALUES (?, ?, ?)
+            INSERT INTO confirmacoes (convidado_id, presenca) 
+            VALUES (?, ?)
             """,
-            (convidado_id, presenca, timestamp),
+            (convidado_id, presenca)
         )
 
     conn.commit()
