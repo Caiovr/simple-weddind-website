@@ -161,7 +161,7 @@ resource "aws_lambda_function" "save_confirmations" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "saveConfirmations.lambda_handler"
   runtime          = "python3.12"
-  timeout          = 10
+  timeout          = 30
   filename         = data.archive_file.lambda_save_confirmation_zip.output_path
   source_code_hash = data.archive_file.lambda_save_confirmation_zip.output_base64sha256
 
@@ -315,6 +315,9 @@ resource "aws_lambda_permission" "allow_post_confirmacao" {
 resource "aws_lambda_event_source_mapping" "sqs_trigger" {
   event_source_arn = aws_sqs_queue.confirmation_queue.arn
   function_name    = aws_lambda_function.save_confirmations.arn
-  batch_size       = 10
+  batch_size       = 5
   enabled          = true
+
+  # Include ReportBatchItemFailures
+  function_response_types = ["ReportBatchItemFailures"]
 }

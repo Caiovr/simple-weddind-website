@@ -9,7 +9,7 @@ sqs = boto3.client('sqs')
 QUEUE_URL = os.environ['SQS_QUEUE']
 
 def lambda_handler(event, context):
-        #try:
+    try:
         # Parse the request body
         print(event)
         body = json.loads(event["body"])
@@ -38,9 +38,9 @@ def lambda_handler(event, context):
             "body": json.dumps({"message": "Confirmation received successfully."})
         }
 
-        '''except Exception as e:
-            print(f"Error: {e}")
-            return {
-                "statusCode": 500,
-                "body": json.dumps({"message": "An error occurred while processing the request."})
-            }'''
+    except Exception as e:
+        print(f"Error: {e}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"message": "An error occurred while processing the request."})
+        }
