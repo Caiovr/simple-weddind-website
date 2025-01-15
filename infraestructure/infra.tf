@@ -91,8 +91,22 @@ resource "aws_iam_role_policy_attachment" "lambda_role_attach" {
 }
 
 # SQS Queue
+resource "aws_sqs_queue" "confirmation_dlq" {
+  name                      = "wedding-confirmation-dlq"
+  delay_seconds             = 0
+  message_retention_seconds = 1209600  # 14 days
+}
+
 resource "aws_sqs_queue" "confirmation_queue" {
   name = "wedding-confirmation-queue"
+  delay_seconds             = 0
+  #max_message_size          = 262144  # 256 KB
+  #message_retention_seconds = 1209600  # 14 days
+  visibility_timeout_seconds = 180  # Adjust to fit your processing time
+  redrive_policy            = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.confirmation_dlq.arn
+    maxReceiveCount     = 5  # Number of retry attempts before sending to DLQ
+  })
 }
 
 # Zip Lambda files
