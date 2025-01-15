@@ -15,7 +15,12 @@
         <p>Por favor, confirme sua presença no nosso casamento!</p>
     </header>
     
-    <section class="form-section">
+    <!-- Add a loading indicator -->
+    <div id="loading" style="text-align: center;">
+        <p>Carregando lista de convidados...</p>
+    </div>
+    
+    <section class="form-section" style="display: none;">
         <form id="confirmacao-form">
             <label for="convidados">Escolha os nomes dos convidados:</label>
             <select id="convidados" name="convidados[]" multiple="multiple" required>
@@ -55,9 +60,14 @@
                         convidadosSelect.append(new Option(convidado.convidado, convidado.id));
                         convidadosMap.set(convidado.id, convidado.convidado); // Adiciona ao Map
                     });
+
+                    // Hide the loading spinner and show the form
+                    $('#loading').hide();
+                    $('.form-section').fadeIn();
                 })
                 .catch(error => {
                     console.error('Erro ao carregar convidados:', error);
+                    alert('Erro ao carregar a lista de convidados. Por favor, tente novamente.');
                 });
     
             // Lida com o envio do formulário via AJAX
@@ -102,6 +112,5 @@
                 });
             });
         });
-    </script>        
+    </script>
 </body>
-</html>
