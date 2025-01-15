@@ -8,6 +8,29 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* Ensures consistent width for the Select2 field */
+        .select2-container {
+            width: 100% !important;
+        }
+
+        /* Ensures consistent height for the dropdown */
+        #convidados {
+            min-height: 40px; /* Adjust as needed for consistency */
+        }
+
+        /* Center and style the loading spinner or text */
+        #loading {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Hide the form section by default */
+        .form-section {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,16 +38,16 @@
         <p>Por favor, confirme sua presença no nosso casamento!</p>
     </header>
     
-    <!-- Add a loading indicator -->
-    <div id="loading" style="text-align: center;">
+    <!-- Loading indicator -->
+    <div id="loading">
         <p>Carregando lista de convidados...</p>
     </div>
     
-    <section class="form-section" style="display: none;">
+    <section class="form-section">
         <form id="confirmacao-form">
             <label for="convidados">Escolha os nomes dos convidados:</label>
             <select id="convidados" name="convidados[]" multiple="multiple" required>
-                <!-- Opções serão carregadas dinamicamente via API -->
+                <!-- Options dynamically loaded -->
             </select>
 
             <label for="presenca">Você vai comparecer?</label>
@@ -43,25 +66,27 @@
 
     <script>
         $(document).ready(function () {
-            const convidadosMap = new Map(); // Map para armazenar os convidados com id como chave e nome como valor
+            const convidadosMap = new Map(); // Map to store guest IDs and names
     
-            // Ativa o Select2 para o campo de múltipla seleção
+            // Initialize Select2 for multiple selection
             $('#convidados').select2({
                 placeholder: "Pesquise e selecione os convidados",
                 allowClear: true,
             });
     
-            // Carrega os nomes dos convidados via API
+            // Load guest names via API
             fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-convidados')
                 .then(response => response.json())
                 .then(data => {
                     const convidadosSelect = $('#convidados');
+                    
+                    // Add options dynamically
                     data.forEach(convidado => {
                         convidadosSelect.append(new Option(convidado.convidado, convidado.id));
-                        convidadosMap.set(convidado.id, convidado.convidado); // Adiciona ao Map
+                        convidadosMap.set(convidado.id, convidado.convidado); // Add to Map
                     });
 
-                    // Hide the loading spinner and show the form
+                    // Hide loading indicator and show form
                     $('#loading').hide();
                     $('.form-section').fadeIn();
                 })
@@ -70,25 +95,25 @@
                     alert('Erro ao carregar a lista de convidados. Por favor, tente novamente.');
                 });
     
-            // Lida com o envio do formulário via AJAX
+            // Handle form submission via AJAX
             $('#confirmacao-form').submit(function (event) {
-                event.preventDefault(); // Impede o envio padrão do formulário
+                event.preventDefault(); // Prevent default form submission
     
-                const convidadosSelecionadosIds = $('#convidados').val(); // IDs selecionados
+                const convidadosSelecionadosIds = $('#convidados').val(); // Selected IDs
                 const presenca = $('#presenca').val();
     
-                // Cria arrays separados para ids, nomes e presenças
+                // Separate arrays for IDs, names, and attendance
                 const ids = [];
                 const nomes = [];
                 const presencas = [];
     
                 convidadosSelecionadosIds.forEach(id => {
                     ids.push(id);
-                    nomes.push(convidadosMap.get(id)); // Recupera o nome pelo ID
-                    presencas.push(presenca); // Adiciona o mesmo valor de presença para todos os selecionados
+                    nomes.push(convidadosMap.get(id)); // Get name by ID
+                    presencas.push(presenca); // Add the same attendance value for all selected
                 });
     
-                // Faz a requisição POST para enviar os dados de confirmação
+                // Send POST request with confirmation data
                 $.ajax({
                     url: 'https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-confirmacao',
                     type: 'POST',
@@ -101,9 +126,9 @@
                     success: function (response) {
                         alert('Confirmação enviada com sucesso!');
     
-                        // Limpa os campos do formulário
-                        $('#confirmacao-form')[0].reset(); // Reseta o formulário
-                        $('#convidados').val(null).trigger('change'); // Limpa o Select2
+                        // Clear form fields
+                        $('#confirmacao-form')[0].reset(); // Reset the form
+                        $('#convidados').val(null).trigger('change'); // Clear Select2
                     },
                     error: function (error) {
                         console.error('Erro ao enviar confirmação:', error);
@@ -114,3 +139,4 @@
         });
     </script>
 </body>
+</html>
