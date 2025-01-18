@@ -1,0 +1,37 @@
+name: Deploy Static Website to S3 and Invalidate CloudFront Cache
+
+on:
+  push:
+    branches:
+      - main  # Change this to your deployment branch if it's not "main"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 3: Sync the /website folder to S3
+      - name: Sync files to S3
+        run: |
+          aws s3 sync ./website s3://project-simple-wedding-website --delete
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+
+      # Step 4: Invalidate CloudFront Cache
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+        env:
+          AWS_DEFAULT_REGION: us-east-1
