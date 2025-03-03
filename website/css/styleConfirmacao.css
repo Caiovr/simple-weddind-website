@@ -7,42 +7,88 @@
 
 /* Estilo do corpo */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    padding: 20px;
+    font-family: 'Questrial', 'Helvetica Neue', Arial, sans-serif;
+    background-color: #282828; /* Fundo escuro */
+    color: #d3d3d3; /* Texto claro */
+    webkit-tap-highlight-color: #222;
+    /*padding: 20px;*/
+}
+
+header .header-content {
+    position: relative;
+    width: 100%;
+    padding: 50px 15px;
+    text-align: center;
+    z-index: 2;
+    color: #eee;
+    background-color: #222;
+}
+
+header .header-content .inner h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+header .header-content .inner p {
+    margin-bottom: 50px;
+    font-size: 16px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.7);
+}
+
+hr {
+    max-width: 80px;
+    border-width: 3px;
+    opacity: 0.09;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-color: #d3d3d3;
+}
+
+a {
+    color: #9c27b0; /* Roxo principal */
+    text-decoration: none;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+a:hover,
+a:focus {
+    color: #9c27c1; /* Roxo mais claro no hover */
+    outline: none;
 }
 
 /* Cabeçalho */
 header {
     text-align: center;
     margin-bottom: 40px;
+    color: #fff; /* Texto branco */
 }
 
-h1 {
+header h1 {
     font-size: 2.5em;
-    color: #2a9d8f;
+    color: #9c27b0; /* Roxo principal */
+    margin-bottom: 10px;
 }
 
-h2 {
+header h2 {
     font-size: 1.8em;
-    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.7); /* Texto esmaecido */
+    margin-bottom: 20px;
 }
 
 /* Seções */
 section {
     margin-bottom: 40px;
+    background-color: #333; /* Fundo cinza escuro */
+    padding: 20px;
+    /*border-radius: 8px;*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra mais escura */
 }
 
-/* Links */
-a {
-    text-decoration: none;
-    color: #2a9d8f;
-    font-weight: bold;
-}
-
-a:hover {
-    color: #264653;
+section h2 {
+    color: #fff;
 }
 
 /* Formulário de Confirmação */
@@ -53,34 +99,43 @@ form {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: #222; /* Fundo ainda mais escuro */
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 label {
     margin-bottom: 8px;
+    color: #d3d3d3;
 }
 
 input, select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid #36333d;
     border-radius: 5px;
+    background-color: #36333d;
+    color: #eee; /* Texto claro */
+}
+
+input:focus, select:focus {
+    border-color: #9c27b0;
+    background-color: #444;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #2a9d8f;
+    background-color: #9c27b0; /* Roxo principal */
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color .3s;
 }
 
 button:hover {
-    background-color: #264653;
+    background-color: #8b27b0; /* Roxo mais escuro */
 }
 
 /* Rodapé */
@@ -88,38 +143,31 @@ footer {
     text-align: center;
     margin-top: 40px;
     font-size: 0.9em;
-    color: #555;
+    background-color: #2d2d2d; /* Fundo cinza escuro */
+    color: #d3d3d3;
+    padding: 15px;
 }
 
-/* Adicionando uma nova seção para a lista de presentes */
-.pix-info {
-    margin-top: 30px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+aside {
+    padding: 50px 0;
 }
 
-.pix-info h2 {
-    color: #2a9d8f;
+.bg-dark {
+    color: #eee;
+    background-color: #222;
 }
 
-.pix-info p {
-    font-size: 1.1em;
-    margin-bottom: 15px;
-}
-
-/* Destaque para o botão ou informações extras */
-.pix-info strong {
-    font-size: 1.2em;
-    color: #264653;
-}
-
+/* Responsividade */
 @media (max-width: 768px) {
     body {
         font-size: 16px;
     }
+
     header h1 {
         font-size: 24px;
+    }
+
+    form {
+        padding: 15px;
     }
 }
