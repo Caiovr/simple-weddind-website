@@ -7,12 +7,12 @@
     <meta name="generator" content="Codeply">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./css/bootstrap.min.css" />
-    <link rel="stylesheet" href="./css/animate.min.css" />
-    <link rel="stylesheet" href="./css/ionicons.min.css" />
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="./css/navbar.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/animate.min.css">
+    <link rel="stylesheet" href="./css/ionicons.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/navbar.css">
     <style>
         /* Ensures consistent width for the Select2 field */
         .select2-container {
@@ -39,6 +39,7 @@
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav id="topNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -48,33 +49,22 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="index.html"><i class="ion-ios-analytics-outline"></i> Jadsmila & Caio </a>
+                <a class="navbar-brand page-scroll" href="index.html"><i class="ion-ios-analytics-outline"></i> Jadsmila & Caio</a>
             </div>
             <div class="navbar-collapse collapse" id="bs-navbar">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <a class="page-scroll" href="confirmacao.html">Confirme sua presença</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="index.html">Inicio</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#two">Os noivos</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#three">Fotos</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="presentes.html">Presentes</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#four">Informações</a>
-                    </li>
+                    <li><a class="page-scroll" href="confirmacao.html">Confirme sua presença</a></li>
+                    <li><a class="page-scroll" href="index.html">Inicio</a></li>
+                    <li><a class="page-scroll" href="#two">Os noivos</a></li>
+                    <li><a class="page-scroll" href="#three">Fotos</a></li>
+                    <li><a class="page-scroll" href="presentes.html">Presentes</a></li>
+                    <li><a class="page-scroll" href="#four">Informações</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
+    <!-- Confirmation Section -->
     <section class="bg-dark" id="one">
         <div class="container text-center">
             <div class="call-to-action">
@@ -84,12 +74,14 @@
         </div>
     </section>
 
+    <!-- Form Section -->
     <section class="form-section" id="two">
         <!-- Loading indicator -->
         <div id="loading">
             <p>Carregando lista de convidados...</p>
         </div>
 
+        <!-- Confirmation Form -->
         <form id="confirmacao-form">
             <label for="convidados">Escolha os nomes dos convidados:</label>
             <select class="convidados" id="convidados" name="convidados[]" multiple="multiple" required title="Selecione os nomes dos convidados que irão comparecer.">
@@ -106,26 +98,28 @@
         </form>
     </section>
 
+    <!-- Footer -->
     <footer>
         <p>Para mais informações, entre em contato: <a href="mailto:contato@casamento.com">contato@casamento.com</a></p>
     </footer>
 
+    <!-- Scripts -->
     <script>
         $(document).ready(function () {
             const convidadosMap = new Map(); // Map to store guest IDs and names
-    
+
             // Initialize Select2 for multiple selection
             $('#convidados').select2({
                 placeholder: "Pesquise e selecione os convidados",
                 allowClear: true,
             });
-    
+
             // Load guest names via API
             fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-convidados')
                 .then(response => response.json())
                 .then(data => {
                     const convidadosSelect = $('#convidados');
-                    
+
                     // Add options dynamically
                     data.forEach(convidado => {
                         convidadosSelect.append(new Option(convidado.convidado, convidado.id));
@@ -140,25 +134,25 @@
                     console.error('Erro ao carregar convidados:', error);
                     alert('Erro ao carregar a lista de convidados. Por favor, tente novamente.');
                 });
-    
+
             // Handle form submission via AJAX
             $('#confirmacao-form').submit(function (event) {
                 event.preventDefault(); // Prevent default form submission
-    
+
                 const convidadosSelecionadosIds = $('#convidados').val(); // Selected IDs
                 const presenca = $('#presenca').val();
-    
+
                 // Separate arrays for IDs, names, and attendance
                 const ids = [];
                 const nomes = [];
                 const presencas = [];
-    
+
                 convidadosSelecionadosIds.forEach(id => {
                     ids.push(id);
                     nomes.push(convidadosMap.get(id)); // Get name by ID
                     presencas.push(presenca); // Add the same attendance value for all selected
                 });
-    
+
                 // Send POST request with confirmation data
                 $.ajax({
                     url: 'https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-confirmacao',
@@ -171,7 +165,7 @@
                     }),
                     success: function (response) {
                         alert('Confirmação enviada com sucesso!');
-    
+
                         // Clear form fields
                         $('#confirmacao-form')[0].reset(); // Reset the form
                         $('#convidados').val(null).trigger('change'); // Clear Select2
