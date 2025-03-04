@@ -8,15 +8,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styleConfirmacao.css">
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
     <link rel="stylesheet" href="./css/animate.min.css" />
     <link rel="stylesheet" href="./css/ionicons.min.css" />
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="./css/navbar.css" />
     <style>
         /* Ensures consistent width for the Select2 field */
         .select2-container {
             width: 100% !important;
+            color: #000;
         }
 
         /* Ensures consistent height for the dropdown */
@@ -47,7 +48,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#first"><i class="ion-ios-analytics-outline"></i> Jadsmila & Caio </a>
+                <a class="navbar-brand page-scroll" href="index.html"><i class="ion-ios-analytics-outline"></i> Jadsmila & Caio </a>
             </div>
             <div class="navbar-collapse collapse" id="bs-navbar">
                 <ul class="nav navbar-nav">
@@ -73,24 +74,25 @@
             </div>
         </div>
     </nav>
-    <header>
-        <aside class="bg-dark">
-        <div class="header-content">
-            <h1>Confirmação de Presença</h1>
-            <p>Por favor, confirme sua presença no nosso casamento!</p>
+
+    <section class="bg-dark" id="one">
+        <div class="container text-center">
+            <div class="call-to-action">
+                <h1>Confirmação de Presença</h1>
+                <p>Por favor, confirme sua presença no nosso casamento!</p>
+            </div>
         </div>
-        </aside>
-    </header>
-    
-    <!-- Loading indicator -->
-    <div id="loading">
-        <p>Carregando lista de convidados...</p>
-    </div>
-    
-    <section class="form-section">
+    </section>
+
+    <section class="form-section" id="two">
+        <!-- Loading indicator -->
+        <div id="loading">
+            <p>Carregando lista de convidados...</p>
+        </div>
+
         <form id="confirmacao-form">
             <label for="convidados">Escolha os nomes dos convidados:</label>
-            <select id="convidados" name="convidados[]" multiple="multiple" required>
+            <select class="convidados" id="convidados" name="convidados[]" multiple="multiple" required title="Selecione os nomes dos convidados que irão comparecer.">
                 <!-- Options dynamically loaded -->
             </select>
 
