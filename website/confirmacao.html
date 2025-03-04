@@ -65,37 +65,37 @@
     </nav>
 
     <!-- Confirmation Section -->
-    <section class="bg-dark" id="one">
+    <section class="bg-primary" id="one">
         <div class="container text-center">
             <div class="call-to-action">
                 <h1>Confirmação de Presença</h1>
                 <p>Por favor, confirme sua presença no nosso casamento!</p>
             </div>
         </div>
-    </section>
 
-    <!-- Form Section -->
-    <section class="form-section" id="two">
-        <!-- Loading indicator -->
-        <div id="loading">
-            <p>Carregando lista de convidados...</p>
+        <!-- Form Section -->
+        <div class="form-section" id="two">
+            <!-- Loading indicator -->
+            <div id="loading">
+                <p>Carregando lista de convidados...</p>
+            </div>
+
+            <!-- Confirmation Form -->
+            <form id="confirmacao-form">
+                <label for="convidados">Escolha os nomes dos convidados:</label>
+                <select class="convidados" id="convidados" name="convidados[]" multiple="multiple" required title="Selecione os nomes dos convidados que irão comparecer.">
+                    <!-- Options dynamically loaded -->
+                </select>
+
+                <label for="presenca">Você vai comparecer?</label>
+                <select id="presenca" name="presenca" required>
+                    <option value="sim">Sim</option>
+                    <option value="nao">Não</option>
+                </select>
+
+                <button type="submit">Confirmar Presença</button>
+            </form>
         </div>
-
-        <!-- Confirmation Form -->
-        <form id="confirmacao-form">
-            <label for="convidados">Escolha os nomes dos convidados:</label>
-            <select class="convidados" id="convidados" name="convidados[]" multiple="multiple" required title="Selecione os nomes dos convidados que irão comparecer.">
-                <!-- Options dynamically loaded -->
-            </select>
-
-            <label for="presenca">Você vai comparecer?</label>
-            <select id="presenca" name="presenca" required>
-                <option value="sim">Sim</option>
-                <option value="nao">Não</option>
-            </select>
-
-            <button type="submit">Confirmar Presença</button>
-        </form>
     </section>
 
     <!-- Footer -->

@@ -66,17 +66,23 @@ p {
 }
 
 .bg-primary {
-    background-color: #333;
+    background-color: #f3e8de;
 }
 
 .bg-dark {
     color: #eee;
-    background-color: #222;
+    background-color: #dccbb5;
 }
 
 .cursive {
     font-family: 'Dancing Script', cursive;
     text-transform: none;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.container-fluid{
+    background-color: #f3e8de;
+    color:#000;
 }
 
 .text-faded {
@@ -89,6 +95,10 @@ p {
 
 .text-primary {
     color: #9c27b0;
+}
+
+.text-shadow {
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -166,7 +176,8 @@ header .header-content .inner p {
 }
 
 footer {
-    background-color:#2d2d2d;
+    color: #eee;
+    background-color: #dccbb5;
 }
 
 @media(min-width:768px) {
