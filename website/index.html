@@ -45,7 +45,7 @@
                 <h1 class="cursive">Bem vindo ao nosso cantinho</h1>
                 <h4>Criamos esse espaço para compartilhar os detalhes da organização de nosso casamento.</h4>
                 <hr>
-                <h2 class="cursive">18 de Agosto de 2025</h2>
+                <h2 class="cursive">16 de Agosto de 2025</h2>
             </div>
         </div>
     </header>
@@ -73,7 +73,7 @@
                     <p class="text-faded cursive" style="font-size:25px">
                         <strong>Deus</strong> nos une desde o primeiro dia de nossas vidas, nesta data especial, nós vamos confirmar este amor perante a ele, e a vocês nossos amigos e familiares.
                     </p>
-                    <a href="#three" class="btn btn-default btn-xl page-scroll">Sobre os noivos</a>
+                    <a href="#two" class="btn btn-default btn-xl page-scroll">Sobre os noivos</a>
                 </div>
             </div>
         </div>
@@ -112,37 +112,8 @@
     <!-- Section: Fotos -->
     <section id="three" class="no-padding">
         <div class="container-fluid">
-            <div class="row no-gutter">
-                <div class="col-lg-4 col-sm-6">
-                    <a href="#galleryModal" class="gallery-box" data-toggle="modal" data-src="./assets/foto1-min.jpg">
-                        <img src="./assets/foto1-min.jpg" class="img-responsive" alt="Image 1">
-                        <div class="gallery-box-caption">
-                            <div class="gallery-box-content">
-                                <div><i class="icon-lg ion-ios-search"></i></div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-sm-6">
-                    <a href="#galleryModal" class="gallery-box" data-toggle="modal" data-src="./assets/foto3-min.jpg">
-                        <img src="./assets/foto3-min.jpg" class="img-responsive" alt="Image 2">
-                        <div class="gallery-box-caption">
-                            <div class="gallery-box-content">
-                                <div><i class="icon-lg ion-ios-search"></i></div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-sm-6">
-                    <a href="#galleryModal" class="gallery-box" data-toggle="modal" data-src="./assets/foto2-min.jpg">
-                        <img src="./assets/foto2-min.jpg" class="img-responsive" alt="Image 3">
-                        <div class="gallery-box-caption">
-                            <div class="gallery-box-content">
-                                <div><i class="icon-lg ion-ios-search"></i></div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+            <div class="row no-gutter" id="gallery-row">
+                <!-- Dynamic content will be inserted here -->
             </div>
         </div>
     </section>
@@ -198,6 +169,55 @@
     </div>
 
     <!-- Scripts -->
+    <script>
+        // Dynamically generate the list of files
+        const files = [];
+        for (let i = 1; i <= 25; i++) {
+            files.push(`foto${i}-min.jpg`);
+        }
+        
+        // Generate the gallery HTML
+        function generateGallery(files) {
+            const galleryRow = document.getElementById('gallery-row');
+            galleryRow.innerHTML = ''; // Clear any existing content
+
+            files.forEach(file => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'col-lg-4 col-sm-6';
+
+                const link = document.createElement('a');
+                link.href = '#galleryModal';
+                link.className = 'gallery-box';
+                link.setAttribute('data-toggle', 'modal');
+                link.setAttribute('data-src', `./assets/${file}`);
+
+                const img = document.createElement('img');
+                img.src = `./assets/${file}`;
+                img.className = 'img-responsive';
+                img.alt = `Image ${file}`;
+
+                const captionDiv = document.createElement('div');
+                captionDiv.className = 'gallery-box-caption';
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'gallery-box-content';
+
+                const iconDiv = document.createElement('div');
+                iconDiv.innerHTML = '<i class="icon-lg ion-ios-search"></i>';
+
+                contentDiv.appendChild(iconDiv);
+                captionDiv.appendChild(contentDiv);
+                link.appendChild(img);
+                link.appendChild(captionDiv);
+                colDiv.appendChild(link);
+                galleryRow.appendChild(colDiv);
+            });
+        }
+
+        // Call the generateGallery function when the page loads
+        document.addEventListener('DOMContentLoaded', () => generateGallery(files));
+    </script>
+
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/jquery.easing.min.js"></script>
