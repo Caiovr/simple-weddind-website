@@ -115,6 +115,11 @@
             <div class="row no-gutter" id="gallery-row">
                 <!-- Dynamic content will be inserted here -->
             </div>
+            <!-- "Show More" Button -->
+            <div class="row text-center">
+                <br>
+                <button id="show-more-btn" class="btn btn-default btn-xl page-scroll">Mostrar mais fotos</button>
+            </div>
         </div>
     </section>
 
@@ -180,13 +185,16 @@
         for (let i = 1; i <= 25; i++) {
             files.push(`foto${i}-min.jpg`);
         }
-        
+
+        // Number of photos to show initially
+        const initialPhotos = 4;
+
         // Generate the gallery HTML
-        function generateGallery(files) {
+        function generateGallery(files, limit) {
             const galleryRow = document.getElementById('gallery-row');
             galleryRow.innerHTML = ''; // Clear any existing content
 
-            files.forEach(file => {
+            files.slice(0, limit).forEach(file => {
                 const colDiv = document.createElement('div');
                 colDiv.className = 'col-lg-4 col-sm-6';
 
@@ -219,8 +227,14 @@
             });
         }
 
+        // Show more photos when the button is clicked
+        document.getElementById('show-more-btn').addEventListener('click', () => {
+            generateGallery(files, files.length); // Show all photos
+            document.getElementById('show-more-btn').style.display = 'none'; // Hide the button
+        });
+
         // Call the generateGallery function when the page loads
-        document.addEventListener('DOMContentLoaded', () => generateGallery(files));
+        document.addEventListener('DOMContentLoaded', () => generateGallery(files, initialPhotos));
     </script>
 
     <script src="./js/jquery.min.js"></script>
