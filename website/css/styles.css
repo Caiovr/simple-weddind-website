@@ -66,6 +66,7 @@ p {
 }
 
 .bg-primary {
+    color: #574d41;
     background-color: #f3e8de;
 }
 
@@ -224,7 +225,7 @@ footer {
 
 label {
     margin-bottom: 8px;
-    color: #d3d3d3;
+    color: #000000;
 }
 
 input, select {
@@ -250,7 +251,8 @@ form {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #222; /* Fundo ainda mais escuro */
+    /*background-color: #222; /* Fundo ainda mais escuro */
+    background-color: #ffffff; /* Fundo branco */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
