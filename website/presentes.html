@@ -10,8 +10,41 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="./css/navbar.css" />
     <style>
-        /* Hide the form section by default */
+        /* Estilos personalizados */
+        .container-box {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 600px;
+        }
 
+        .qr-code img {
+            width: 150px;
+            height: 150px;
+            border: 5px solid #d4af37;
+            border-radius: 10px;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .btn-pix {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #d4af37;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-pix:hover {
+            background-color: #b89d30;
+        }
     </style>
 </head>
 <body>
@@ -59,10 +92,12 @@
             <div class="qr-code">
                 <img src="./assets/qr-code-gift.jpeg" alt="QR Code para lista de presentes">
             </div>
+            <!-- Botão "Copiar código PIX" -->
+            <button class="btn-pix" onclick="copiarCodigoPix()">Copiar código PIX</button>
+            <br>
             <p>Ou clique no link abaixo:</p>
             <a href="https://sualistadepresentes.com" target="_blank">Acessar Lista de Presentes</a>
         </div>
-
     </section>
 
     <footer>
@@ -71,12 +106,20 @@
 
     <!-- Scripts -->
     <script>
-        $(document).ready(function () {
-            // Hide loading indicator and show form
-            // $('#loading').hide();
-            $('.qr-code-section').fadeIn();
-        });
-    </script>
+        // Função para copiar o código PIX
+        function copiarCodigoPix() {
+            // Substitua este valor pelo código PIX real
+            const codigoPix = "00020126870014br.gov.bcb.pix0136c0cb26e8-c343-46a8-bb14-62b8452af8bc0225Contribua o quanto puder!5204000053039865802BR5917Caio Vianna Rizzo6008Brasilia62230519daqr469355207189878630400FF";
 
+            // Copia o valor para a área de transferência
+            navigator.clipboard.writeText(codigoPix)
+                .then(() => {
+                    alert("Código PIX copiado com sucesso!");
+                })
+                .catch(() => {
+                    alert("Erro ao copiar o código PIX. Tente novamente.");
+                });
+        }
+    </script>
 </body>
 </html>

@@ -134,6 +134,7 @@ footer {
     max-width: 400px;
     margin: 0 auto;
     align-items: center;
+    /* background-image: url('../assets/fundo_foto.jpg'); */
 }
 
 .qr-code-section {
