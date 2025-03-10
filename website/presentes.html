@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Presentes | Casamento João & Maria</title>
+    <title>Lista de Presentes | Casamento Jadsmila & Caio</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
     <link rel="stylesheet" href="./css/animate.min.css" />
     <link rel="stylesheet" href="./css/ionicons.min.css" />
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="./css/navbar.css" />
+    <style>
+        /* Hide the form section by default */
+
+    </style>
 </head>
 <body>
     <nav id="topNav" class="navbar navbar-default navbar-fixed-top">
@@ -46,29 +50,33 @@
             </div>
         </div>
     </nav>
-
-    <section class="bg-dark" id="one">
-        <div class="container text-center">
-            <h1>Lista de Presentes</h1>
-            <p>Para quem deseja nos presentear, criamos uma lista de presentes via Pix.</p>
-        </div>
-    </section>
     
     <section class="bg-primary">
-        <div class="container text-center">
-            <h2>Dados para Envio do Presente por Pix</h2>
-            <p>Escolha o valor que deseja nos presentear e realize o depósito na seguinte chave Pix:</p>
-            <p><strong>Chave Pix: 123.456.789-00</strong></p>
-
-            <p>Se desejar, envie o comprovante para o nosso e-mail: <a href="mailto:contato@casamento.com">contato@casamento.com</a></p>
-
-            <h3>Outras opções de presentes</h3>
-            <p>Além do Pix, você pode escolher entre nossos desejos, como viagens e experiências! Se precisar de mais informações, entre em contato conosco.</p>
+        <div class="container-box">
+            <h1>Lista de Presentes</h1>
+            <p>Ajude-nos a construir nosso futuro juntos!</p>
+            <h2>Escaneie o QR Code</h2>
+            <div class="qr-code">
+                <img src="./assets/qr-code-gift.jpeg" alt="QR Code para lista de presentes">
+            </div>
+            <p>Ou clique no link abaixo:</p>
+            <a href="https://sualistadepresentes.com" target="_blank">Acessar Lista de Presentes</a>
         </div>
+
     </section>
 
     <footer>
         <p>Para mais informações, entre em contato: <a href="mailto:contato@casamento.com">contato@casamento.com</a></p>
     </footer>
+
+    <!-- Scripts -->
+    <script>
+        $(document).ready(function () {
+            // Hide loading indicator and show form
+            // $('#loading').hide();
+            $('.qr-code-section').fadeIn();
+        });
+    </script>
+
 </body>
 </html>
