@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Jadsmila & Caio</title>
+    <meta name="keywords" content="casamento, Jadsmila, Caio, cerimônia, festa, confirmação de presença">
+    <meta name="author" content="Jadsmila e Caio">
     <meta name="description" content="Website do casamento de Jadsmila & Caio">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Codeply">
@@ -279,6 +281,12 @@
             });
         }
 
+        // Adicionando lazy loading para melhorar o desempenho
+        const images = document.querySelectorAll('.gallery-item img');
+        images.forEach(img => {
+            img.setAttribute('loading', 'lazy');
+        });
+
         // Show more photos when the "Show More" button is clicked
         document.getElementById('show-more-btn').addEventListener('click', () => {
             generateGallery(files, files.length); // Show all photos
@@ -297,10 +305,10 @@
         document.addEventListener('DOMContentLoaded', () => generateGallery(files, initialPhotos));
     </script>
 
-    <script src="./js/jquery.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/jquery.easing.min.js"></script>
-    <script src="./js/wow.js"></script>
-    <script src="./js/scripts.js"></script>
+    <script src="./js/jquery.min.js" defer></script>
+    <script src="./js/bootstrap.min.js" defer></script>
+    <script src="./js/jquery.easing.min.js" defer></script>
+    <script src="./js/wow.js" defer></script>
+    <script src="./js/scripts.js" defer></script>
 </body>
 </html>
