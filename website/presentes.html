@@ -9,43 +9,6 @@
     <link rel="stylesheet" href="./css/ionicons.min.css" />
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="./css/navbar.css" />
-    <style>
-        /* Estilos personalizados */
-        .container-box {
-            text-align: center;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            max-width: 600px;
-        }
-
-        .qr-code img {
-            width: 150px;
-            height: 150px;
-            border: 5px solid #d4af37;
-            border-radius: 10px;
-            padding: 10px;
-            background-color: #fff;
-        }
-
-        .btn-pix {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #d4af37;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-        }
-
-        .btn-pix:hover {
-            background-color: #b89d30;
-        }
-    </style>
 </head>
 <body>
     <nav id="topNav" class="navbar navbar-default navbar-fixed-top">
@@ -88,6 +51,7 @@
         <div class="container-box">
             <h1>Lista de Presentes</h1>
             <p>Ajude-nos a construir nosso futuro juntos!</p>
+            <p>Desde já agradecemos! Toda colaboração vai nos ajudar a sair do aluguel e curtir nossa lua de mel!!</p>
             <h2>Escaneie o QR Code</h2>
             <div class="qr-code">
                 <img src="./assets/qr-code-gift.jpeg" alt="QR Code para lista de presentes">
@@ -95,8 +59,13 @@
             <!-- Botão "Copiar código PIX" -->
             <button class="btn-pix" onclick="copiarCodigoPix()">Copiar código PIX</button>
             <br>
-            <p>Ou clique no link abaixo:</p>
-            <a href="https://sualistadepresentes.com" target="_blank">Acessar Lista de Presentes</a>
+            <h4>Ou outros meios de pagamento:</h4>
+            <a class="mercadopago-button" href="https://link.mercadopago.com.br/jadsmilaecaio">Pagar Mercado Pago</a>
+            <!-- <script src="https://www.mercadopago.com.br/integrations/v1/web-payment-checkout.js"
+                data-preference-id="469355207-0a927e0a-4de6-435e-b133-1ea78f136148" data-source="button">
+            </script> -->
+            <br>
+            <!-- <a href="https://sualistadepresentes.com" target="_blank">Acessar Lista de Presentes</a> -->
         </div>
     </section>
 
