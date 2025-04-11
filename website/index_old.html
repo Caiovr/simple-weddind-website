@@ -78,11 +78,11 @@
             </div>
             <div class="navbar-collapse collapse" id="bs-navbar">
                 <ul class="nav navbar-nav">
-                    <li><a class="page-scroll" href="#confirmacao">Confirme sua presença</a></li>
+                    <li><a class="page-scroll" href="confirmacao.html">Confirme sua presença</a></li>
                     <li><a class="page-scroll" href="#one">Inicio</a></li>
                     <li><a class="page-scroll" href="#two">Os noivos</a></li>
                     <li><a class="page-scroll" href="#three">Fotos</a></li>
-                    <li><a class="page-scroll" href="#presentes">Presentes</a></li>
+                    <li><a class="page-scroll" href="presentes.html">Presentes</a></li>
                     <li><a class="page-scroll" href="#four">Informações</a></li>
                 </ul>
             </div>
@@ -102,7 +102,7 @@
     </header>
 
     <!-- Call to Action -->
-    <aside class="bg-dark" id="confirmacao">
+    <aside class="bg-dark">
         <div class="container text-center">
             <div class="call-to-action">
                 <h2 class="text-primary">Junte-se a nós</h2>
@@ -115,15 +115,16 @@
     </aside>
 
     <!-- Section: Inicio -->
-    <section class="bg-primary inicio-section" id="one">
+    <section class="bg-primary" id="one">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 text-center">
                     <h2 class="margin-top-0 text-primary">Inicio</h2>
                     <br>
-                    <p style="font-size:25px">
+                    <p class="text-shadow" style="font-size:25px">
                         <strong>Deus</strong> nos une desde o primeiro dia de nossas vidas, nesta data especial, nós vamos confirmar este amor perante a ele, e a vocês nossos amigos e familiares.
                     </p>
+                    <a href="#two" class="btn btn-default btn-xl page-scroll">Sobre os noivos</a>
                 </div>
             </div>
         </div>
@@ -191,28 +192,51 @@
     <!-- Section: Presentes -->
     <section class="container-fluid" id="presentes">
         <div class="row">
-            <div class="col-lg-12 text-center">
+            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 text-center">
                 <h2 class="text-primary">Lista de Presentes</h2>
                 <hr class="primary">
                 <p class="text-muted">Escolha um dos presentes abaixo e contribua para a nossa felicidade!</p>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12">
-                <!-- Carrossel Container -->
-                <div class="carrossel-container">
-                    <!-- Botão de Anterior -->
-                    <button class="carrossel-btn carrossel-btn-prev" aria-label="Anterior">&#10094;</button>
-                    
-                    <!-- Carrossel -->
-                    <div class="carrossel">
-                        <div class="carrossel-inner">
-                            <!-- Itens dos Presentes (gerados dinamicamente) -->
-                        </div>
-                    </div>
-
-                    <!-- Botão de Próximo -->
-                    <button class="carrossel-btn carrossel-btn-next" aria-label="Próximo">&#10095;</button>
+            <!-- Presente 1 -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="presente-box">
+                    <img src="./assets/foto11-min.jpg" alt="Quadro decorativo" class="img-responsive">
+                    <h3>Quadro Decorativo</h3>
+                    <p class="text-muted">Um lindo quadro para decorar nossa casa.</p>
+                    <p class="text-primary"><strong>Valor: R$ 150,00</strong></p>
+                    <button class="btn-pix" data-valor="150.00">Pagar com PIX</button>
+                </div>
+            </div>
+            <!-- Presente 2 -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="presente-box">
+                    <img src="./assets/foto25-min.jpg" alt="Jogo de jantar" class="img-responsive">
+                    <h3>Jogo de Jantar</h3>
+                    <p class="text-muted">Um jogo de jantar completo para receber nossos convidados.</p>
+                    <p class="text-primary"><strong>Valor: R$ 300,00</strong></p>
+                    <button class="btn-pix" data-valor="300.00">Pagar com PIX</button>
+                </div>
+            </div>
+            <!-- Presente 3 -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="presente-box">
+                    <img src="./assets/foto20-min.jpg" alt="Cafeteira" class="img-responsive">
+                    <h3>Cafeteira</h3>
+                    <p class="text-muted">Uma cafeteira moderna para começar o dia com energia.</p>
+                    <p class="text-primary"><strong>Valor: R$ 250,00</strong></p>
+                    <button class="btn-pix" data-valor="250.00">Pagar com PIX</button>
+                </div>
+            </div>
+            <!-- Presente 4 -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="presente-box">
+                    <img src="./assets/foto24-min.jpg" alt="Conta de Luz" class="img-responsive">
+                    <h3>Conta de Luz</h3>
+                    <p class="text-muted">Energia da nossa casa. Gostaria que fosse mais barata :/</p>
+                    <p class="text-primary"><strong>Valor: R$ 250,00</strong></p>
+                    <button class="btn-pix" data-valor="250.00">Pagar com PIX</button>
                 </div>
             </div>
         </div>
@@ -346,182 +370,6 @@
                 // window.location.href = `https://pagamento.com?valor=${valor}&chave=${chavePix}`;
             });
         });
-
-        // Dados dos presentes
-        const presentes = [
-            {
-                imagem: './assets/foto1-min.jpg',
-                titulo: 'Quadro Decorativo',
-                descricao: 'Um lindo quadro para decorar nossa casa.',
-                valor: '150.00'
-            },
-            {
-                imagem: './assets/foto25-min.jpg',
-                titulo: 'Jogo de Jantar',
-                descricao: 'Um jogo de jantar completo para receber nossos convidados.',
-                valor: '300.00'
-            },
-            {
-                imagem: './assets/foto20-min.jpg',
-                titulo: 'Cafeteira',
-                descricao: 'Uma cafeteira moderna para começar o dia com energia.',
-                valor: '250.00'
-            },
-            {
-                imagem: './assets/foto24-min.jpg',
-                titulo: 'Conta de Luz',
-                descricao: 'Nossa energia, gostariamos que fosse mais barato :/',
-                valor: '250.00'
-            },
-            // Adicione mais presentes aqui
-        ];
-
-        const carrosselInner = document.querySelector('.carrossel-inner');
-
-        presentes.forEach(presente => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'carrossel-item';
-
-            const presenteBox = document.createElement('div');
-            presenteBox.className = 'presente-box-carrossel';
-
-            const img = document.createElement('img');
-            img.src = presente.imagem;
-            img.alt = presente.titulo;
-
-            const titulo = document.createElement('h3');
-            titulo.textContent = presente.titulo;
-
-            const descricao = document.createElement('p');
-            descricao.textContent = presente.descricao;
-
-            const valor = document.createElement('p');
-            valor.innerHTML = `<strong>Valor: R$ ${presente.valor}</strong>`;
-
-            const btnPix = document.createElement('button');
-            btnPix.className = 'btn-pix';
-            btnPix.setAttribute('data-valor', presente.valor);
-            btnPix.textContent = 'Pagar com PIX';
-
-            const btnMercadoPago = document.createElement('button');
-            btnMercadoPago.className = 'btn-mercado-pago';
-            btnMercadoPago.setAttribute('data-valor', presente.valor);
-            btnMercadoPago.textContent = 'Pagar com Mercado Pago';
-
-            presenteBox.appendChild(img);
-            presenteBox.appendChild(titulo);
-            presenteBox.appendChild(descricao);
-            presenteBox.appendChild(valor);
-            presenteBox.appendChild(btnPix);
-            presenteBox.appendChild(btnMercadoPago);
-            itemDiv.appendChild(presenteBox);
-            carrosselInner.appendChild(itemDiv);
-        });
-
-        // Script para o carrossel de presentes
-        document.addEventListener('DOMContentLoaded', () => {
-            const carrosselInner = document.querySelector('.carrossel-inner');
-            const carrosselItems = document.querySelectorAll('.carrossel-item');
-            const totalItems = carrosselItems.length;
-            let currentIndex = 0;
-
-            // Botões de navegação
-            const btnPrev = document.querySelector('.carrossel-btn-prev');
-            const btnNext = document.querySelector('.carrossel-btn-next');
-
-            // Função para mover o carrossel
-            const moveCarrossel = (direction) => {
-                if (direction === 'next') {
-                    currentIndex = (currentIndex + 1) % totalItems;
-                } else if (direction === 'prev') {
-                    currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-                }
-                const offset = -currentIndex * 100; // Calcula o deslocamento
-                carrosselInner.style.transform = `translateX(${offset}%)`;
-            };
-
-            // Eventos para os botões
-            btnPrev.addEventListener('click', () => moveCarrossel('prev'));
-            btnNext.addEventListener('click', () => moveCarrossel('next'));
-
-            // Opcional: Adicionar suporte para arrastar (drag)
-            let isDragging = false;
-            let startX, startScrollLeft;
-
-            carrosselInner.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.pageX;
-                startScrollLeft = carrosselInner.scrollLeft;
-            });
-
-            carrosselInner.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                const x = e.pageX - startX;
-                carrosselInner.scrollLeft = startScrollLeft - x;
-            });
-
-            carrosselInner.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-
-            carrosselInner.addEventListener('mouseleave', () => {
-                isDragging = false;
-            });
-
-            // Funcionalidade do botão PIX
-            document.querySelectorAll('.btn-pix').forEach(button => {
-                button.addEventListener('click', function () {
-                    const valor = this.getAttribute('data-valor');
-                    const chavePix = 'sua_chave_pix_aqui'; // Substitua pela sua chave PIX
-
-                    // Exibir mensagem com a chave PIX
-                    alert(`Chave PIX: ${chavePix}\nValor: R$ ${valor}\nCopie a chave e faça o pagamento.`);
-                });
-            });
-
-            // Funcionalidade do botão Mercado Pago
-            document.querySelectorAll('.btn-mercado-pago').forEach(button => {
-                button.addEventListener('click', async function () {
-                    const valor = this.getAttribute('data-valor');
-                    const accessToken = 'APP_USR-8199363806408078-031620-c93306ea18a53383f2fa88fbc3983f88-469355207'; // Substitua pelo seu access token
-
-                    try {
-                        const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${accessToken}`
-                            },
-                            body: JSON.stringify({
-                                items: [
-                                    {
-                                        title: 'Presente de Casamento',
-                                        quantity: 1,
-                                        currency_id: 'BRL',
-                                        unit_price: parseFloat(valor)
-                                    }
-                                ],
-                                back_urls: {
-                                    success: 'https://seusite.com/success',
-                                    failure: 'https://seusite.com/failure',
-                                    pending: 'https://seusite.com/pending'
-                                },
-                                auto_return: 'approved'
-                            })
-                        });
-
-                        const data = await response.json();
-                        window.location.href = data.init_point; // Redireciona para o link de pagamento
-                    } catch (error) {
-                        console.error('Erro ao gerar link de pagamento:', error);
-                        alert('Erro ao gerar link de pagamento. Tente novamente.');
-                    }
-                });
-            });
-
-        });
-
     </script>
 
     <script src="./js/jquery.min.js" defer></script>

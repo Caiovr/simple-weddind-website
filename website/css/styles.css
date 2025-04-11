@@ -16,7 +16,7 @@ body {
 
 body {
     font-family: 'Questrial','Helvetica Neue',Arial,sans-serif;
-    background-color: #282828;
+    background-color: #ffffff;
     color: #d3d3d3;
     webkit-tap-highlight-color: #222;
 }
@@ -34,7 +34,7 @@ hr.light {
 }
 
 a {
-    color: #9c27b0;
+    color: #d4af37;
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;
@@ -95,7 +95,7 @@ p {
 }
 
 .text-primary {
-    color: #9c27b0;
+    color: #d4af37;
 }
 
 .text-shadow {
@@ -121,6 +121,7 @@ footer {
 .no-padding {
     padding: 0;
 }
+
 
 /* .container-box {
     text-align: center;
@@ -210,6 +211,160 @@ footer {
 
 .qr-code-section a:hover {
     background-color: #b89d30;
+}
+
+/* Estilos para a seção de presentes */
+#presentes {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.presente-box {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.presente-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.presente-box img {
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.presente-box h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.presente-box p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.btn-pix {
+    background-color: #32bbad; /* Cor do PIX */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-pix:hover {
+    background-color: #2aa89d; /* Cor mais escura para o hover */
+}
+
+/* Estilos para o carrossel de presentes */
+.carrossel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+.carrossel {
+    width: 100%;
+    overflow: hidden;
+}
+
+.carrossel-inner {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carrossel-item {
+    flex: 0 0 33.33%; /* Exibe 3 itens por vez */
+    box-sizing: border-box;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.presente-box-carrossel {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.presente-box-carrossel:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.presente-box-carrossel img {
+    width: 100%;
+    height: 200px; /* Altura fixa para todas as imagens */
+    object-fit: cover; /* Garante que as imagens cubram o espaço sem distorcer */
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.presente-box-carrossel h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.presente-box-carrossel p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.btn-pix {
+    background-color: #32bbad; /* Cor do PIX */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-pix:hover {
+    background-color: #2aa89d; /* Cor mais escura para o hover */
+}
+
+.carrossel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 10;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.carrossel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.carrossel-btn-prev {
+    left: 10px;
+}
+
+.carrossel-btn-next {
+    right: 10px;
 }
 
 header {
@@ -310,6 +465,10 @@ footer {
         padding: 100px 0;
     }
 
+    .inicio-section {
+        min-height: 450px;
+    }
+
 }
 
 label {
@@ -348,7 +507,7 @@ form {
 
 button {
     padding: 10px 20px;
-    background-color: #9c27b0; /* Roxo principal */
+    background-color: #d4af37; /* Roxo principal */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -388,6 +547,10 @@ textarea {
 
 .margin-top-0 {
     margin-top: 0;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0;
 }
 
 .feature {
