@@ -8,12 +8,47 @@
     <meta name="description" content="Website do casamento de Jadsmila & Caio">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Codeply">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/animate.min.css">
     <link rel="stylesheet" href="./css/ionicons.min.css">
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/navbar.css">
     <style>
+        /* Ensures consistent width for the Select2 field */
+        .select2-container {
+            width: 100% !important;
+            color: #000;
+        }
+
+        /* Hide the form section by default */
+        .form-section {
+            display: none;
+        }
+
+        /* Center and style the loading spinner or text */
+        #loading {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            padding: 20px;
+        }
+        
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-gif {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 15px;
+        }
+
         /* Gallery Image Container */
         .gallery-item {
             width: 100%; /* Full width of the column */
@@ -106,10 +141,35 @@
         <div class="container text-center">
             <div class="call-to-action">
                 <h2 class="text-primary">Junte-se a nós</h2>
-                <a href="confirmacao.html" target="_blank" class="btn btn-default btn-lg wow flipInX">Confirmar Presença</a>
+                <button id="loadFormButton" class="btn btn-default btn-lg wow flipInX">Confirmar Presença</button>
             </div>
             <br>
-            <hr>
+            <!-- Form Section -->
+            <div class="form-section" id="two">
+                <!-- Loading indicator -->
+                <div id="loading-convidados">
+                    <div class="loading-content">
+                        <img src="https://i.gifer.com/origin/b4/b4d657e7ef262b88eb5f7ac021edda87.gif" class="loading-gif" alt="Carregando...">
+                        <p>Carregando lista de convidados...</p>
+                    </div>
+                </div>
+
+                <!-- Confirmation Form -->
+                <form id="confirmacao-form">
+                    <label for="convidados">Escolha os nomes dos convidados:</label>
+                    <select class="convidados" id="convidados" name="convidados[]" multiple="multiple" required title="Selecione os nomes dos convidados que irão comparecer.">
+                        <!-- Options dynamically loaded -->
+                    </select>
+
+                    <label for="presenca">Você vai comparecer?</label>
+                    <select id="presenca" name="presenca" required>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+
+                    <button type="submit">Confirmar Presença</button>
+                </form>
+            </div>
             <br>
         </div>
     </aside>
@@ -260,6 +320,7 @@
 
     <!-- Scripts -->
     <script>
+        
         // Dynamically generate the list of files
         const files = [];
         for (let i = 1; i <= 25; i++) {
@@ -520,6 +581,94 @@
                 });
             });
 
+        });
+
+
+        // RSVP Form section
+        const convidadosMap = new Map(); // Map to store guest IDs and names
+
+        // Initialize Select2 for multiple selection
+        $('#convidados').select2({
+            placeholder: "Pesquise e selecione os convidados",
+            allowClear: true,
+        });
+
+        // Button click handler to load the form
+        $('#loadFormButton').click(function() {
+            // Hide the button
+            $(this).hide();
+            
+            // Show loading message
+            $('#loading-convidados').show();
+            $('.form-section').show();
+            $('#confirmacao-form').hide();
+
+            // Load guest names via API
+            fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-convidados')
+                .then(response => response.json())
+                .then(data => {
+                    const convidadosSelect = $('#convidados');
+
+                    // Add options dynamically
+                    data.forEach(convidado => {
+                        convidadosSelect.append(new Option(convidado.convidado, convidado.id));
+                        convidadosMap.set(convidado.id, convidado.convidado); // Add to Map
+                    });
+
+                    // Show Form
+                    $('#confirmacao-form').show();
+
+                    // Hide loading indicator
+                    $('#loading-convidados').hide();
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar convidados:', error);
+                    alert('Erro ao carregar a lista de convidados. Por favor, tente novamente.');
+                    $('#loadFormButton').show(); // Show button again if error
+                    $('#loading-convidados').hide();
+                });
+        });
+
+        // Handle form submission via AJAX
+        $('#confirmacao-form').submit(function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const convidadosSelecionadosIds = $('#convidados').val(); // Selected IDs
+            const presenca = $('#presenca').val();
+
+            // Separate arrays for IDs, names, and attendance
+            const ids = [];
+            const nomes = [];
+            const presencas = [];
+
+            convidadosSelecionadosIds.forEach(id => {
+                ids.push(id);
+                nomes.push(convidadosMap.get(id)); // Get name by ID
+                presencas.push(presenca); // Add the same attendance value for all selected
+            });
+
+            // Send POST request with confirmation data
+            $.ajax({
+                url: 'https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-confirmacao',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    ids: ids,
+                    convidados: nomes,
+                    presenca: presencas,
+                }),
+                success: function (response) {
+                    alert('Confirmação enviada com sucesso!');
+
+                    // Clear form fields
+                    $('#confirmacao-form')[0].reset(); // Reset the form
+                    $('#convidados').val(null).trigger('change'); // Clear Select2
+                },
+                error: function (error) {
+                    console.error('Erro ao enviar confirmação:', error);
+                    alert('Ocorreu um erro ao enviar a confirmação. Tente novamente.');
+                },
+            });
         });
 
     </script>
