@@ -8,48 +8,12 @@
     <meta name="description" content="Website do casamento de Jadsmila & Caio">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Codeply">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/animate.min.css">
     <link rel="stylesheet" href="./css/ionicons.min.css">
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/navbar.css">
     <style>
-        /* Ensures consistent width for the Select2 field */
-        .select2-container {
-            width: 100% !important;
-            color: #000;
-        }
-
-        /* Hide the form section by default */
-        .form-section {
-            display: none;
-        }
-
-        /* Center and style the loading spinner or text */
-        #loading {
-            text-align: center;
-            font-size: 16px;
-            color: #555;
-            padding: 20px;
-        }
-        
-        .loading-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .loading-gif {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 15px;
-        }
-
         /* Gallery Image Container */
         .gallery-item {
             width: 100%; /* Full width of the column */
@@ -97,7 +61,6 @@
             text-align: center;
             margin-top: 20px;
         }
-        
     </style>
 </head>
 <body>
@@ -115,11 +78,11 @@
             </div>
             <div class="navbar-collapse collapse" id="bs-navbar">
                 <ul class="nav navbar-nav">
-                    <li><a class="page-scroll" href="#confirmacao">Confirme sua presença</a></li>
+                    <li><a class="page-scroll" href="confirmacao.html">Confirme sua presença</a></li>
                     <li><a class="page-scroll" href="#one">Inicio</a></li>
                     <li><a class="page-scroll" href="#two">Os noivos</a></li>
                     <li><a class="page-scroll" href="#three">Fotos</a></li>
-                    <li><a class="page-scroll" href="#presentes">Presentes</a></li>
+                    <li><a class="page-scroll" href="presentes.html">Presentes</a></li>
                     <li><a class="page-scroll" href="#four">Informações</a></li>
                 </ul>
             </div>
@@ -139,53 +102,29 @@
     </header>
 
     <!-- Call to Action -->
-    <aside class="bg-dark" id="confirmacao">
+    <aside class="bg-dark">
         <div class="container text-center">
             <div class="call-to-action">
                 <h2 class="text-primary">Junte-se a nós</h2>
-                <button id="loadFormButton" class="btn btn-default btn-lg wow flipInX">Confirmar Presença</button>
+                <a href="confirmacao.html" target="_blank" class="btn btn-default btn-lg wow flipInX">Confirmar Presença</a>
             </div>
             <br>
-            <!-- Form Section -->
-            <div class="form-section">
-                <!-- Loading indicator -->
-                <div id="loading-convidados">
-                    <div class="loading-content">
-                        <img src="https://i.gifer.com/origin/b4/b4d657e7ef262b88eb5f7ac021edda87.gif" class="loading-gif" alt="Carregando...">
-                        <p>Carregando lista de convidados...</p>
-                    </div>
-                </div>
-
-                <!-- Confirmation Form -->
-                <form id="confirmacao-form">
-                    <label for="convidados">Escolha os nomes dos convidados:</label>
-                    <select class="convidados" id="convidados" name="convidados[]" multiple="multiple" required title="Selecione os nomes dos convidados que irão comparecer.">
-                        <!-- Options dynamically loaded -->
-                    </select>
-
-                    <label for="presenca">Você vai comparecer?</label>
-                    <select id="presenca" name="presenca" required>
-                        <option value="sim">Sim</option>
-                        <option value="nao">Não</option>
-                    </select>
-
-                    <button type="submit">Confirmar Presença</button>
-                </form>
-            </div>
+            <hr>
             <br>
         </div>
     </aside>
 
     <!-- Section: Inicio -->
-    <section class="bg-primary inicio-section" id="one">
+    <section class="bg-primary" id="one">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 text-center">
                     <h2 class="margin-top-0 text-primary">Inicio</h2>
                     <br>
-                    <p style="font-size:25px">
+                    <p class="text-shadow" style="font-size:25px">
                         <strong>Deus</strong> nos une desde o primeiro dia de nossas vidas, nesta data especial, nós vamos confirmar este amor perante a ele, e a vocês nossos amigos e familiares.
                     </p>
+                    <a href="#two" class="btn btn-default btn-xl page-scroll">Sobre os noivos</a>
                 </div>
             </div>
         </div>
@@ -245,38 +184,6 @@
                         <br>
                         <button class="btn btn-primary btn-lg center-block" data-dismiss="modal" aria-hidden="true">Close <i class="ion-android-close"></i></button>
                     </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PIX Payment Modal -->
-    <div id="pixModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Pagamento via PIX</h4>
-                </div>
-                <div class="modal-body pix-modal-content">
-                    <div id="qrcode"></div>
-                    <div class="pix-info">
-                        <p>Escaneie o QR code acima ou copie a chave PIX abaixo:</p>
-                        <div class="pix-chave" id="pixChave">00020126870014br.gov.bcb.pix0136c0cb26e8-c343-46a8-bb14-62b8452af8bc0225Contribua o quanto puder!5204000053039865802BR5917Caio Vianna Rizzo6008Brasilia62230519daqr469355207189878630400FF</div>
-                        <div class="pix-valor" id="pixValor">R$ 0,00</div>
-                    </div>
-                    <button class="copy-btn" id="copyPixBtn">Copiar Chave PIX</button>
-                    <button class="copy-btn" id="copyValorBtn">Copiar Valor</button>
-                    <div class="copy-success" id="copySuccess">Copiado com sucesso!</div>
-                    <div class="pix-instructions">
-                        <p>1. Abra seu aplicativo de banco</p>
-                        <p>2. Selecione pagar via PIX</p>
-                        <p>3. Escaneie o QR code ou cole a chave PIX</p>
-                        <p>4. Confirme o valor e finalize o pagamento</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
@@ -427,6 +334,20 @@
         // Call the generateGallery function when the page loads
         document.addEventListener('DOMContentLoaded', () => generateGallery(files, initialPhotos));
 
+        // Script para o botão PIX
+        document.querySelectorAll('.btn-pix').forEach(button => {
+            button.addEventListener('click', function () {
+                const valor = this.getAttribute('data-valor');
+                const chavePix = 'sua_chave_pix_aqui'; // Substitua pela sua chave PIX
+
+                // Exibir mensagem com a chave PIX
+                alert(`Chave PIX: ${chavePix}\nValor: R$ ${valor}\nCopie a chave e faça o pagamento.`);
+                
+                // Opcional: Redirecionar para uma página de pagamento
+                // window.location.href = `https://pagamento.com?valor=${valor}&chave=${chavePix}`;
+            });
+        });
+
         // Dados dos presentes
         const presentes = [
             {
@@ -483,17 +404,11 @@
             btnPix.setAttribute('data-valor', presente.valor);
             btnPix.textContent = 'Pagar com PIX';
 
-            const btnMercadoPago = document.createElement('button');
-            btnMercadoPago.className = 'btn-mercado-pago';
-            btnMercadoPago.setAttribute('data-valor', presente.valor);
-            btnMercadoPago.textContent = 'Pagar com Mercado Pago';
-
             presenteBox.appendChild(img);
             presenteBox.appendChild(titulo);
             presenteBox.appendChild(descricao);
             presenteBox.appendChild(valor);
             presenteBox.appendChild(btnPix);
-            presenteBox.appendChild(btnMercadoPago);
             itemDiv.appendChild(presenteBox);
             carrosselInner.appendChild(itemDiv);
         });
@@ -549,227 +464,15 @@
                 isDragging = false;
             });
 
-            // Configuração da chave PIX
-            const chavePix = "c0cb26e8-c343-46a8-bb14-62b8452af8bc"; // Chave PIX (CPF, CNPJ, email, telefone ou chave aleatória)
-            const nomeTitular = 'Caio Vianna Rizzo'; // Nome do titular da conta PIX
-            const cidadeTitular = 'Vitoria'; // Cidade do titular
-
             // Funcionalidade do botão PIX
             document.querySelectorAll('.btn-pix').forEach(button => {
-                button.addEventListener('click', function() {
-                    const valor = parseFloat(this.getAttribute('data-valor')).toFixed(2);
-                    
-                    // Formatar valor para exibição
-                    const valorFormatado = parseFloat(valor).toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL'
-                    });
-                    
-                    // Atualizar modal com os dados
-                    document.getElementById('pixValor').textContent = valorFormatado;
-                    
-                    // Gerar payload PIX (formato BR Code)
-                    //const payloadPix = "00020126870014br.gov.bcb.pix0136c0cb26e8-c343-46a8-bb14-62b8452af8bc0225Contribua o quanto puder!5204000053039865802BR5917Caio Vianna Rizzo6008Brasilia62230519daqr469355207189878630400FF";
-                    const payloadPix = `00020126580014br.gov.bcb.pix0136c0cb26e8-c343-46a8-bb14-62b8452af8bc5204000053039865405${valor}5802BR5917Caio Vianna Rizzo6008Brasilia62080504mpda6304E796`;
-                    //const payloadPix = `00020126360014BR.GOV.BCB.PIX0114${chavePix}5204000053039865404${valor}5802BR5925${nomeTitular}6005${cidadeTitular}62070503***6304`;
-                    
-                    // Calcular CRC16 do payload
-                    const crc = calculateCRC16(payloadPix);
-                    const payloadCompleto = payloadPix + crc;
-                    
-                    // Gerar QR Code
-                    const qrcodeDiv = document.getElementById('qrcode');
-                    qrcodeDiv.innerHTML = ''; // Limpar QR code anterior
-                    new QRCode(qrcodeDiv, {
-                        text: payloadCompleto,
-                        width: 200,
-                        height: 200,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                    
-                    // Copiar valor automaticamente
-                    copyToClipboard(valor.toString().replace('.', ','));
-                    
-                    // Mostrar mensagem de sucesso
-                    const copySuccess = document.getElementById('copySuccess');
-                    copySuccess.style.display = 'block';
-                    setTimeout(() => {
-                        copySuccess.style.display = 'none';
-                    }, 2000);
-                    
-                    // Abrir modal
-                    $('#pixModal').modal('show');
-                });
-            });
-
-            // Funcionalidade dos botões de cópia na modal PIX
-            document.getElementById('copyPixBtn').addEventListener('click', function() {
-                copyToClipboard(chavePix);
-                showCopySuccess();
-            });
-            
-            document.getElementById('copyValorBtn').addEventListener('click', function() {
-                const valor = document.getElementById('pixValor').textContent.replace('R$', '').trim();
-                copyToClipboard(valor.replace('.', ','));
-                showCopySuccess();
-            });
-            
-            function showCopySuccess() {
-                const copySuccess = document.getElementById('copySuccess');
-                copySuccess.style.display = 'block';
-                setTimeout(() => {
-                    copySuccess.style.display = 'none';
-                }, 2000);
-            }
-            
-            // Função para copiar texto para o clipboard
-            function copyToClipboard(text) {
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.position = 'fixed';  // Evitar rolagem para o elemento
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-            }
-            
-            // Função para calcular CRC16 (necessário para o payload PIX)
-            function calculateCRC16(payload) {
-                let crc = 0xFFFF;
-                for (let i = 0; i < payload.length; i++) {
-                    crc ^= payload.charCodeAt(i) << 8;
-                    for (let j = 0; j < 8; j++) {
-                        crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
-                    }
-                }
-                return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-            }
-
-            // Funcionalidade do botão Mercado Pago
-            document.querySelectorAll('.btn-mercado-pago').forEach(button => {
-                button.addEventListener('click', async function() {
+                button.addEventListener('click', function () {
                     const valor = this.getAttribute('data-valor');
-                    
-                    try {
-                        // Send request to your backend endpoint
-                        const response = await fetch('YOUR_AWS_API_GATEWAY_ENDPOINT', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                amount: parseFloat(valor),
-                                item_title: 'Presente de Casamento',
-                                currency: 'BRL',
-                                success_url: 'https://seusite.com/success',
-                                failure_url: 'https://seusite.com/failure',
-                                pending_url: 'https://seusite.com/pending'
-                            })
-                        });
+                    const chavePix = 'sua_chave_pix_aqui'; // Substitua pela sua chave PIX
 
-                        const data = await response.json();
-                        
-                        if (data.init_point) {
-                            window.location.href = data.init_point; // Redirect to payment link
-                        } else {
-                            throw new Error('No payment link received');
-                        }
-                    } catch (error) {
-                        console.error('Erro ao gerar link de pagamento:', error);
-                        alert('Erro ao gerar link de pagamento. Tente novamente.');
-                    }
+                    // Exibir mensagem com a chave PIX
+                    alert(`Chave PIX: ${chavePix}\nValor: R$ ${valor}\nCopie a chave e faça o pagamento.`);
                 });
-            });
-
-        });
-
-
-        // RSVP Form section
-        const convidadosMap = new Map(); // Map to store guest IDs and names
-
-        // Initialize Select2 for multiple selection
-        $('#convidados').select2({
-            placeholder: "Pesquise e selecione os convidados",
-            allowClear: true,
-        });
-
-        // Button click handler to load the form
-        $('#loadFormButton').click(function() {
-            // Hide the button
-            $(this).hide();
-            
-            // Show loading message
-            $('#loading-convidados').show();
-            $('.form-section').show();
-            $('#confirmacao-form').hide();
-
-            // Load guest names via API
-            fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-convidados')
-                .then(response => response.json())
-                .then(data => {
-                    const convidadosSelect = $('#convidados');
-
-                    // Add options dynamically
-                    data.forEach(convidado => {
-                        convidadosSelect.append(new Option(convidado.convidado, convidado.id));
-                        convidadosMap.set(convidado.id, convidado.convidado); // Add to Map
-                    });
-
-                    // Show Form
-                    $('#confirmacao-form').show();
-
-                    // Hide loading indicator
-                    $('#loading-convidados').hide();
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar convidados:', error);
-                    alert('Erro ao carregar a lista de convidados. Por favor, tente novamente.');
-                    $('#loadFormButton').show(); // Show button again if error
-                    $('#loading-convidados').hide();
-                });
-        });
-
-        // Handle form submission via AJAX
-        $('#confirmacao-form').submit(function (event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const convidadosSelecionadosIds = $('#convidados').val(); // Selected IDs
-            const presenca = $('#presenca').val();
-
-            // Separate arrays for IDs, names, and attendance
-            const ids = [];
-            const nomes = [];
-            const presencas = [];
-
-            convidadosSelecionadosIds.forEach(id => {
-                ids.push(id);
-                nomes.push(convidadosMap.get(id)); // Get name by ID
-                presencas.push(presenca); // Add the same attendance value for all selected
-            });
-
-            // Send POST request with confirmation data
-            $.ajax({
-                url: 'https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-confirmacao',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    ids: ids,
-                    convidados: nomes,
-                    presenca: presencas,
-                }),
-                success: function (response) {
-                    alert('Confirmação enviada com sucesso!');
-
-                    // Clear form fields
-                    $('#confirmacao-form')[0].reset(); // Reset the form
-                    $('#convidados').val(null).trigger('change'); // Clear Select2
-                },
-                error: function (error) {
-                    console.error('Erro ao enviar confirmação:', error);
-                    alert('Ocorreu um erro ao enviar a confirmação. Tente novamente.');
-                },
             });
         });
 

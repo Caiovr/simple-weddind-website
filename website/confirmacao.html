@@ -36,6 +36,22 @@
         .form-section {
             display: none;
         }
+        
+        /* Style for the load button */
+        #loadFormButton {
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        #loadFormButton:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +86,7 @@
             <div class="call-to-action">
                 <h1>Confirmação de Presença</h1>
                 <p>Por favor, confirme sua presença no nosso casamento!</p>
+                <button id="loadFormButton">Carregar Formulário</button>
             </div>
         </div>
 
@@ -114,26 +131,41 @@
                 allowClear: true,
             });
 
-            // Load guest names via API
-            fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-convidados')
-                .then(response => response.json())
-                .then(data => {
-                    const convidadosSelect = $('#convidados');
+            // Button click handler to load the form
+            $('#loadFormButton').click(function() {
+                // Hide the button
+                $(this).hide();
+                
+                // Show loading message
+                $('#loading').show();
+                $('.form-section').show();
+                $('#confirmacao-form').hide();
 
-                    // Add options dynamically
-                    data.forEach(convidado => {
-                        convidadosSelect.append(new Option(convidado.convidado, convidado.id));
-                        convidadosMap.set(convidado.id, convidado.convidado); // Add to Map
+                // Load guest names via API
+                fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-convidados')
+                    .then(response => response.json())
+                    .then(data => {
+                        const convidadosSelect = $('#convidados');
+
+                        // Add options dynamically
+                        data.forEach(convidado => {
+                            convidadosSelect.append(new Option(convidado.convidado, convidado.id));
+                            convidadosMap.set(convidado.id, convidado.convidado); // Add to Map
+                        });
+
+                        // Show Form
+                        $('#confirmacao-form').show();
+
+                        // Hide loading indicator
+                        $('#loading').hide();
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar convidados:', error);
+                        alert('Erro ao carregar a lista de convidados. Por favor, tente novamente.');
+                        $('#loadFormButton').show(); // Show button again if error
+                        $('#loading').hide();
                     });
-
-                    // Hide loading indicator and show form
-                    $('#loading').hide();
-                    $('.form-section').fadeIn();
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar convidados:', error);
-                    alert('Erro ao carregar a lista de convidados. Por favor, tente novamente.');
-                });
+            });
 
             // Handle form submission via AJAX
             $('#confirmacao-form').submit(function (event) {
