@@ -92,6 +92,48 @@
             opacity: 1; /* Show caption on hover */
         }
 
+        /* Estilos para a imagem */
+        #galleryImage {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Botões de navegação melhorados */
+        .modal-nav-buttons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 1050;
+        }
+
+        .modal-nav-btn {
+            pointer-events: auto;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            margin: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-nav-btn:hover {
+            background: rgba(0,0,0,0.8);
+            transform: scale(1.1);
+        }
+
         /* Button Container */
         .button-container {
             text-align: center;
@@ -240,10 +282,14 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
+                    <div class="modal-nav-buttons">
+                        <button class="modal-nav-btn" id="prevBtn">&lt;</button>
+                        <button class="modal-nav-btn" id="nextBtn">&gt;</button>
+                    </div>
                     <img src="" id="galleryImage" class="img-responsive">
                     <p>
                         <br>
-                        <button class="btn btn-primary btn-lg center-block" data-dismiss="modal" aria-hidden="true">Close <i class="ion-android-close"></i></button>
+                        <button class="btn btn-primary btn-lg center-block" data-dismiss="modal" aria-hidden="true">Fechar <i class="ion-android-close"></i></button>
                     </p>
                 </div>
             </div>
@@ -356,6 +402,7 @@
     <script>
         // Dynamically generate the list of files
         const files = [];
+        
         for (let i = 1; i <= 25; i++) {
             files.push(`foto${i}-min.jpg`);
         }
@@ -415,6 +462,7 @@
             generateGallery(files, files.length); // Show all photos
             document.getElementById('show-more-btn').style.display = 'none'; // Hide "Show More" button
             document.getElementById('show-less-btn').style.display = 'inline-block'; // Show "Show Less" button
+            navigatorGallery();
         });
 
         // Show fewer photos when the "Show Less" button is clicked
@@ -422,10 +470,72 @@
             generateGallery(files, initialPhotos); // Show initial photos
             document.getElementById('show-less-btn').style.display = 'none'; // Hide "Show Less" button
             document.getElementById('show-more-btn').style.display = 'inline-block'; // Show "Show More" button
+            navigatorGallery();
         });
 
         // Call the generateGallery function when the page loads
-        document.addEventListener('DOMContentLoaded', () => generateGallery(files, initialPhotos));
+        document.addEventListener('DOMContentLoaded', () => {
+            generateGallery(files, initialPhotos);
+            navigatorGallery();
+        });
+
+        // Gallery Modal Navigation
+        function navigatorGallery() {
+            // Get all gallery items
+            const galleryItems = document.querySelectorAll('.gallery-box');
+            let currentIndex = 0;
+            
+            // When a gallery item is clicked, set the current index
+            galleryItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateModalImage();
+                });
+            });
+            
+            // Update modal image with current index
+            function updateModalImage() {
+                const imgSrc = galleryItems[currentIndex].getAttribute('data-src');
+                document.getElementById('galleryImage').src = imgSrc;
+            }
+            
+            // Next button functionality
+            document.getElementById('nextBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = (currentIndex + 1) % galleryItems.length;
+                updateModalImage();
+            });
+            
+            // Previous button functionality
+            document.getElementById('prevBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+                updateModalImage();
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if ($('#galleryModal').is(':visible')) {
+                    if (e.key === 'ArrowRight') {
+                        // Next image
+                        currentIndex = (currentIndex + 1) % galleryItems.length;
+                        updateModalImage();
+                    } else if (e.key === 'ArrowLeft') {
+                        // Previous image
+                        currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+                        updateModalImage();
+                    } else if (e.key === 'Escape') {
+                        // Close modal
+                        $('#galleryModal').modal('hide');
+                    }
+                }
+            });
+            
+            // Update modal image when shown (in case it was opened directly)
+            $('#galleryModal').on('show.bs.modal', function() {
+                updateModalImage();
+            });
+        };
 
         // Dados dos presentes
         const presentes = [
