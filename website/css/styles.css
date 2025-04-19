@@ -789,3 +789,18 @@ img::-moz-selection {
     color: #fff;
     background: 0 0;
 }
+
+/* Estilo para o iframe do mapa */
+iframe {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 10px 0;
+    border: 1px solid #ddd !important;
+}
+
+/* Melhora a responsividade */
+@media (max-width: 768px) {
+    iframe {
+        height: 250px;
+    }
+}

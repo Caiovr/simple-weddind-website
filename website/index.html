@@ -265,6 +265,14 @@
 
     <!-- Section: Fotos -->
     <section id="three" class="bg-primary">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="margin-top-0 text-primary">Fotos</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+        </div>
         <div class="container-fluid">
             <div class="row no-gutter" id="gallery-row">
                 <!-- Dynamic content will be inserted here -->
@@ -363,32 +371,48 @@
         <div class="row">
             <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
                 <h2 class="text-center text-primary">Informações</h2>
+
                 <hr>
+
                 <div class="media wow fadeInRight">
-                    <h3>Celebração</h3>
+                    <h3><i class="icon-lg ion-ios-home-outline"></i> Celebração</h3>
                     <div class="media-body media-middle">
-                        <p>Paróquia</p>
-                        <p>Início as 18H</p>
+                        <p><i class="ion-ios-location-outline"></i> Paróquia Santa Rita de Cássia</p>
+                        <p><i class="ion-ios-clock-outline"></i> Início as 18H</p>
+                        <div class="media-body media-middle">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4918.970954678199!2d-40.06870525272932!3d-19.400723229447593!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xb626060f0047d5%3A0xf9884384db84d523!2sPar%C3%B3quia%20Santa%20Rita%20de%20C%C3%A1ssia%20-%20Diocese%20de%20Colatina%2FES!5e0!3m2!1sen!2sbr!4v1745084815551!5m2!1sen!2sbr" 
+                                width="100%" 
+                                height="400" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                            <p>R. Cap. José Maria, 442 - Araçá, Linhares - ES, 29900-250</p>
+                        </div>
                     </div>
-                    <div class="media-right"><i class="icon-lg ion-ios-home-outline"></i></div>
                 </div>
+
                 <hr>
+
                 <div class="media wow fadeInRight">
-                    <h3>Festa</h3>
-                    <div class="media-left"><i class="icon-lg ion-bowtie"></i></div>
-                    <div class="media-body media-middle">
-                        <p>Lorem impsum</p>
+                    <h3><i class="icon-lg ion-ios-wineglass"></i> Festa</h3>
+                    <div class="media wow fadeInRight">
+                        <p><i class="ion-ios-location-outline"></i> Guararema Clube</p>
+                        <p><i class="ion-ios-clock-outline"></i> Inicio as 19H</p>
+                        <div class="media-body media-middle">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2487.4773698962854!2d-40.06849917701477!3d-19.39672118707861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xb625fbc01ffb6d%3A0x632c193d1c6f47ad!2sGUARAREMA!5e0!3m2!1sen!2sbr!4v1745085316254!5m2!1sen!2sbr" 
+                                width="100%" 
+                                height="400" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
                     </div>
+                    <p>Av. Pres. Getúlio Vargas, 1166 - Centro, Linhares - ES, 29900-210</p>
                 </div>
-                <hr>
-                <div class="media wow fadeInRight">
-                    <h3>Listas de Presente</h3>
-                    <div class="media-body media-middle">
-                        <a href="presentes.html" target="_blank"><p>Gifts</p></a>
-                    </div>
-                    <div class="media-right"><i class="icon-lg ion-heart"></i></div>
-                </div>
-                <hr>
             </div>
         </div>
     </section>
@@ -408,7 +432,7 @@
         }
 
         // Number of photos to show initially
-        const initialPhotos = 6;
+        const initialPhotos = 3;
 
         // Generate the gallery HTML
         function generateGallery(files, limit) {
