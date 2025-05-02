@@ -271,6 +271,19 @@
                     <!-- Carrossel -->
                     <div class="carrossel">
                         <div class="carrossel-inner">
+                            <div class="carrossel-item">
+                                <div class="presente-box-carrossel">
+                                    <img src="./assets/giftbox.png" alt="Presente Personalizado">
+                                    <h3>Presente Personalizado</h3>
+                                    <p>Contribua com o valor que desejar para nossa lua de mel e/ou compra do nosso apartamento próprio.</p>
+                                    <div class="valor-personalizado">
+                                        <label for="valor-personalizado">Valor (R$):</label>
+                                        <input type="number" id="valor-personalizado" min="1" step="0.01" placeholder="Digite o valor">
+                                    </div>
+                                    <button class="btn-pix btn-personalizado">Pagar com PIX</button>
+                                    <button class="btn-mercado-pago btn-personalizado">Pagar com Mercado Pago</button>
+                                </div>
+                            </div>
                             <!-- Itens dos Presentes (gerados dinamicamente) -->
                         </div>
                     </div>
@@ -551,6 +564,7 @@
 
             const btnMercadoPago = document.createElement('button');
             btnMercadoPago.className = 'btn-mercado-pago';
+            btnMercadoPago.setAttribute('data-titulo', presente.titulo);
             btnMercadoPago.setAttribute('data-valor', presente.valor);
             btnMercadoPago.textContent = 'Pagar com Mercado Pago';
 
@@ -614,6 +628,33 @@
             carrosselInner.addEventListener('mouseleave', () => {
                 isDragging = false;
             });
+            
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            carrosselInner.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+            }, { passive: true });
+
+            carrosselInner.addEventListener('touchmove', (e) => {
+                touchEndX = e.touches[0].clientX;
+            }, { passive: true });
+
+            carrosselInner.addEventListener('touchend', () => {
+                const deltaX = touchStartX - touchEndX;
+
+                if (Math.abs(deltaX) > 50) { // Define um limiar para ignorar toques curtos
+                    if (deltaX > 0) {
+                        moveCarrossel('next');
+                    } else {
+                        moveCarrossel('prev');
+                    }
+                }
+
+                // Reset
+                touchStartX = 0;
+                touchEndX = 0;
+            });
 
             // Configuração da chave PIX
             const chavePix = "c0cb26e8-c343-46a8-bb14-62b8452af8bc"; // Chave PIX (CPF, CNPJ, email, telefone ou chave aleatória)
@@ -623,7 +664,23 @@
             // Funcionalidade do botão PIX
             document.querySelectorAll('.btn-pix').forEach(button => {
                 button.addEventListener('click', function() {
-                    const valor = parseFloat(this.getAttribute('data-valor')).toFixed(2);
+                    let valor;
+
+                    if (this.classList.contains('btn-personalizado')) {
+                        // Para o presente personalizado, pegar o valor do input
+                        const inputValor = document.getElementById('valor-personalizado');
+                        valor = parseFloat(inputValor.value);
+                        
+                        if (isNaN(valor) || valor <= 0) {
+                            alert('Por favor, insira um valor válido maior que zero.');
+                            return;
+                        }
+                        
+                        valor = valor.toFixed(2);
+                    } else {
+                        // Para outros presentes, pegar o valor do atributo data-valor
+                        valor = parseFloat(this.getAttribute('data-valor')).toFixed(2);
+                    }
                     
                     // Formatar valor para exibição
                     const valorFormatado = parseFloat(valor).toLocaleString('pt-BR', {
@@ -635,9 +692,10 @@
                     document.getElementById('pixValor').textContent = valorFormatado;
                     
                     // Gerar payload PIX (formato BR Code)
-                    //const payloadPix = "00020126870014br.gov.bcb.pix0136c0cb26e8-c343-46a8-bb14-62b8452af8bc0225Contribua o quanto puder!5204000053039865802BR5917Caio Vianna Rizzo6008Brasilia62230519daqr469355207189878630400FF";
-                    const payloadPix = `00020126580014br.gov.bcb.pix0136c0cb26e8-c343-46a8-bb14-62b8452af8bc5204000053039865405${valor}5802BR5917Caio Vianna Rizzo6008Brasilia62080504mpda6304E796`;
-                    //const payloadPix = `00020126360014BR.GOV.BCB.PIX0114${chavePix}5204000053039865404${valor}5802BR5925${nomeTitular}6005${cidadeTitular}62070503***6304`;
+                    const valorStr = valor.toString(); // already toFixed(2)
+                    const valorLength = valorStr.length.toString().padStart(2, '0'); // ensures 2-digit length field
+
+                    const payloadPix = `00020126580014br.gov.bcb.pix0136c0cb26e8-c343-46a8-bb14-62b8452af8bc52040000530398654${valorLength}${valorStr}5802BR5917Caio Vianna Rizzo6008Brasilia62080504mpda6304`;
                     
                     // Calcular CRC16 do payload
                     const crc = calculateCRC16(payloadPix);
@@ -716,7 +774,24 @@
             // Funcionalidade do botão Mercado Pago
             document.querySelectorAll('.btn-mercado-pago').forEach(button => {
                 button.addEventListener('click', async function() {
-                    const valor = this.getAttribute('data-valor');
+                    const titulo = this.getAttribute('data-titulo');
+                    let valor;
+
+                    if (this.classList.contains('btn-personalizado')) {
+                        // Para o presente personalizado, pegar o valor do input
+                        const inputValor = document.getElementById('valor-personalizado');
+                        valor = parseFloat(inputValor.value);
+                        
+                        if (isNaN(valor) || valor <= 0) {
+                            alert('Por favor, insira um valor válido maior que zero.');
+                            return;
+                        }
+                        
+                        valor = valor.toFixed(2);
+                    } else {
+                        // Para outros presentes, pegar o valor do atributo data-valor
+                        valor = parseFloat(this.getAttribute('data-valor')).toFixed(2);
+                    }
                     
                     try {
                         // Send request to your backend endpoint
@@ -727,11 +802,11 @@
                             },
                             body: JSON.stringify({
                                 amount: parseFloat(valor),
-                                item_title: 'Presente de Casamento',
+                                item_title: titulo, //'Presente de Casamento',
                                 currency: 'BRL',
-                                success_url: 'https://seusite.com/success',
-                                failure_url: 'https://seusite.com/failure',
-                                pending_url: 'https://seusite.com/pending'
+                                success_url: 'https://jadsmilaecaio.com.br/success',
+                                failure_url: 'https://jadsmilaecaio.com.br/failure',
+                                pending_url: 'https://jadsmilaecaio.com.br/pending'
                             })
                         });
 

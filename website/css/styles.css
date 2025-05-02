@@ -286,10 +286,23 @@ footer {
 }
 
 .carrossel-item {
-    flex: 0 0 33.33%; /* Exibe 3 itens por vez */
+    flex: 0 0 90%; /* Exibe 3 itens por vez */
     box-sizing: border-box;
     padding: 0 10px;
     text-align: center;
+}
+
+/* Responsividade */
+@media (min-width: 768px) {
+    .carrossel-item {
+        flex: 0 0 50%;
+    }
+}
+
+@media (min-width: 992px) {
+    .carrossel-item {
+        flex: 0 0 33.333%;
+    }
 }
 
 .presente-box-carrossel {
