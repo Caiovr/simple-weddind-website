@@ -22,6 +22,11 @@ resource "random_id" "bucket_id" {
   byte_length = 4
 }
 
+# Recupera metadados do segredo existente
+data "aws_secretsmanager_secret" "wedding_secrets" {
+  name = "weddingWebSiteSecrets"
+}
+
 # Lambda Role
 resource "aws_iam_role" "lambda_role" {
   name = "wedding-lambda-role"
@@ -80,7 +85,15 @@ resource "aws_iam_policy" "lambda_policy" {
           "logs:PutLogEvents"
         ],
         Resource = "*"
-      }
+      },
+      {
+      Effect = "Allow",
+      Action = [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      Resource = data.aws_secretsmanager_secret.wedding_secrets.arn
+    }
     ]
   })
 }
@@ -126,6 +139,12 @@ data "archive_file" "lambda_send_to_sqs" {
   type         = "zip"
   source_file  = "${path.module}/../lambda/sendToSQS.py"
   output_path  = "${path.module}/../lambda/sendToSQS.zip"
+}
+
+data "archive_file" "lambda_get_payment_link_zip" {
+  type         = "zip"
+  source_file  = "${path.module}/../lambda/getPaymentLink.py"
+  output_path  = "${path.module}/../lambda/getPaymentLink.zip"
 }
 
 # data "archive_file" "lambda_options_zip" {
@@ -184,6 +203,23 @@ resource "aws_lambda_function" "save_confirmations" {
       S3_BUCKET = aws_s3_bucket.sqlite_db_bucket.id
       SQS_QUEUE = aws_sqs_queue.confirmation_queue.url
       DB_NAME = "wedding.db"
+    }
+  }
+}
+
+# Lambda getPaymentLink
+resource "aws_lambda_function" "get_payment_link" {
+  function_name    = "get-payment-link"
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "getPaymentLink.lambda_handler"
+  runtime          = "python3.12"
+  timeout          = 30
+  filename         = data.archive_file.lambda_get_payment_link_zip.output_path
+  source_code_hash = data.archive_file.lambda_get_payment_link_zip.output_base64sha256
+
+  environment {
+    variables = {
+      SECRET_NAME = data.aws_secretsmanager_secret.wedding_secrets.name
     }
   }
 }
