@@ -688,9 +688,6 @@
                         currency: 'BRL'
                     });
                     
-                    // Atualizar modal com os dados
-                    document.getElementById('pixValor').textContent = valorFormatado;
-                    
                     // Gerar payload PIX (formato BR Code)
                     const valorStr = valor.toString(); // already toFixed(2)
                     const valorLength = valorStr.length.toString().padStart(2, '0'); // ensures 2-digit length field
@@ -714,7 +711,7 @@
                     });
                     
                     // Copiar valor automaticamente
-                    copyToClipboard(valor.toString().replace('.', ','));
+                    copyToClipboard(payloadCompleto);
                     
                     // Mostrar mensagem de sucesso
                     const copySuccess = document.getElementById('copySuccess');
@@ -723,6 +720,10 @@
                         copySuccess.style.display = 'none';
                     }, 2000);
                     
+                    // Atualizar modal com os dados
+                    document.getElementById('pixChave').textContent = payloadCompleto;
+                    document.getElementById('pixValor').textContent = valorFormatado;
+
                     // Abrir modal
                     $('#pixModal').modal('show');
                 });
