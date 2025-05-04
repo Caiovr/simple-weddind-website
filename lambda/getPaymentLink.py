@@ -2,10 +2,11 @@ import json
 import requests
 import boto3
 from botocore.exceptions import ClientError
+import os
 
 def get_AWS_secrets():
 
-    secret_name = "weddingWebSiteSecrets"
+    secret_name = os.environ['SECRET_NAME']
     region_name = 'us-east-1'
 
     # Create a Secrets Manager client
