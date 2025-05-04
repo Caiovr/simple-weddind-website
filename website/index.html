@@ -578,7 +578,6 @@
             carrosselInner.appendChild(itemDiv);
         });
 
-        // Script para o carrossel de presentes
         document.addEventListener('DOMContentLoaded', () => {
             const carrosselInner = document.querySelector('.carrossel-inner');
             const carrosselItems = document.querySelectorAll('.carrossel-item');
@@ -596,15 +595,15 @@
                 } else if (direction === 'prev') {
                     currentIndex = (currentIndex - 1 + totalItems) % totalItems;
                 }
-                const offset = -currentIndex * 100; // Calcula o deslocamento
+                const offset = -currentIndex * 100;
                 carrosselInner.style.transform = `translateX(${offset}%)`;
             };
 
-            // Eventos para os botões
+            // Eventos para botões
             btnPrev.addEventListener('click', () => moveCarrossel('prev'));
             btnNext.addEventListener('click', () => moveCarrossel('next'));
 
-            // Opcional: Adicionar suporte para arrastar (drag)
+            // Suporte para mouse drag (desktop)
             let isDragging = false;
             let startX, startScrollLeft;
 
@@ -621,39 +620,50 @@
                 carrosselInner.scrollLeft = startScrollLeft - x;
             });
 
-            carrosselInner.addEventListener('mouseup', () => {
-                isDragging = false;
+            ['mouseup', 'mouseleave'].forEach(evt => {
+                carrosselInner.addEventListener(evt, () => isDragging = false);
             });
 
-            carrosselInner.addEventListener('mouseleave', () => {
-                isDragging = false;
-            });
-            
+            // Suporte para swipe (touch)
             let touchStartX = 0;
             let touchEndX = 0;
+            let isSwiping = false;
 
             carrosselInner.addEventListener('touchstart', (e) => {
+                // Ignore swipe if starting on button or link
+                if (e.target.closest('button, a')) return;
+
                 touchStartX = e.touches[0].clientX;
+                isSwiping = false;
             }, { passive: true });
 
             carrosselInner.addEventListener('touchmove', (e) => {
-                touchEndX = e.touches[0].clientX;
+                const currentX = e.touches[0].clientX;
+                const deltaX = touchStartX - currentX;
+
+                if (Math.abs(deltaX) > 10) {
+                    isSwiping = true;
+                }
+
+                touchEndX = currentX;
             }, { passive: true });
 
-            carrosselInner.addEventListener('touchend', () => {
+            carrosselInner.addEventListener('touchend', (e) => {
                 const deltaX = touchStartX - touchEndX;
 
-                if (Math.abs(deltaX) > 50) { // Define um limiar para ignorar toques curtos
+                if (isSwiping && Math.abs(deltaX) > 50) {
                     if (deltaX > 0) {
                         moveCarrossel('next');
                     } else {
                         moveCarrossel('prev');
                     }
+                    e.preventDefault();
                 }
 
                 // Reset
                 touchStartX = 0;
                 touchEndX = 0;
+                isSwiping = false;
             });
 
             // Configuração da chave PIX
@@ -688,9 +698,6 @@
                         currency: 'BRL'
                     });
                     
-                    // Atualizar modal com os dados
-                    document.getElementById('pixValor').textContent = valorFormatado;
-                    
                     // Gerar payload PIX (formato BR Code)
                     const valorStr = valor.toString(); // already toFixed(2)
                     const valorLength = valorStr.length.toString().padStart(2, '0'); // ensures 2-digit length field
@@ -714,7 +721,7 @@
                     });
                     
                     // Copiar valor automaticamente
-                    copyToClipboard(valor.toString().replace('.', ','));
+                    copyToClipboard(payloadCompleto);
                     
                     // Mostrar mensagem de sucesso
                     const copySuccess = document.getElementById('copySuccess');
@@ -723,6 +730,10 @@
                         copySuccess.style.display = 'none';
                     }, 2000);
                     
+                    // Atualizar modal com os dados
+                    document.getElementById('pixChave').textContent = payloadCompleto;
+                    document.getElementById('pixValor').textContent = valorFormatado;
+
                     // Abrir modal
                     $('#pixModal').modal('show');
                 });
