@@ -804,34 +804,62 @@
                         valor = parseFloat(this.getAttribute('data-valor')).toFixed(2);
                     }
                     
-                    try {
-                        // Send request to your backend endpoint
-                        const response = await fetch('YOUR_AWS_API_GATEWAY_ENDPOINT', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                amount: parseFloat(valor),
-                                item_title: titulo, //'Presente de Casamento',
-                                currency: 'BRL',
-                                success_url: 'https://jadsmilaecaio.com.br/success',
-                                failure_url: 'https://jadsmilaecaio.com.br/failure',
-                                pending_url: 'https://jadsmilaecaio.com.br/pending'
-                            })
-                        });
+                    // try {
+                    //     // Send request to your backend endpoint
+                    //     const response = await fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-payment-link', {
+                    //         method: 'POST',
+                    //         headers: {
+                    //             'Content-Type': 'application/json'
+                    //         },
+                    //         body: JSON.stringify({
+                    //             amount: parseFloat(valor),
+                    //             item_title: titulo, //'Presente de Casamento',
+                    //             currency: 'BRL',
+                    //             success_url: 'https://jadsmilaecaio.com.br/success',
+                    //             failure_url: 'https://jadsmilaecaio.com.br/failure',
+                    //             pending_url: 'https://jadsmilaecaio.com.br/pending'
+                    //         })
+                    //     });
 
-                        const data = await response.json();
+                    //     const data = await response.json();
                         
-                        if (data.init_point) {
-                            window.location.href = data.init_point; // Redirect to payment link
-                        } else {
-                            throw new Error('No payment link received');
+                    //     if (data.init_point) {
+                    //         window.location.href = data.init_point; // Redirect to payment link
+                    //     } else {
+                    //         throw new Error('No payment link received');
+                    //     }
+                    // } catch (error) {
+                    //     console.error('Erro ao gerar link de pagamento:', error);
+                    //     alert('Erro ao gerar link de pagamento. Tente novamente.');
+                    // }
+                    
+                    $.ajax({
+                        url: 'https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-payment-link',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            amount: parseFloat(valor),
+                            item_title: titulo,
+                            currency: 'BRL',
+                            success_url: 'https://jadsmilaecaio.com.br/success',
+                            failure_url: 'https://jadsmilaecaio.com.br/failure',
+                            pending_url: 'https://jadsmilaecaio.com.br/pending'
+                        }),
+                        success: function(response) {
+                            if (response.init_point) {
+                                window.location.href = response.init_point;
+                            } else {
+                                alert('Erro: Link de pagamento não recebido.');
+                                console.error('Resposta inválida:', response);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Erro ao gerar link de pagamento:', error);
+                            console.log('Detalhes do erro:', xhr.responseText);
+                            alert('Erro ao gerar link de pagamento. Tente novamente.');
                         }
-                    } catch (error) {
-                        console.error('Erro ao gerar link de pagamento:', error);
-                        alert('Erro ao gerar link de pagamento. Tente novamente.');
-                    }
+                    });
                 });
             });
 

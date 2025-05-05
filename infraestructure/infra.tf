@@ -143,7 +143,7 @@ data "archive_file" "lambda_send_to_sqs" {
 
 data "archive_file" "lambda_get_payment_link_zip" {
   type         = "zip"
-  source_file  = "${path.module}/../lambda/getPaymentLink.py"
+  source_dir  = "${path.module}/../lambda/build_getPaymentLink"
   output_path  = "${path.module}/../lambda/getPaymentLink.zip"
 }
 
@@ -299,6 +299,12 @@ resource "aws_apigatewayv2_route" "options_route" {
   target = "integrations/${aws_apigatewayv2_integration.get_convidados_integration.id}"
 }
 
+resource "aws_apigatewayv2_route" "get_payment_link_route" {
+  api_id    = aws_apigatewayv2_api.wedding_website_api.id
+  route_key = "POST /get-payment-link"
+  target    = "integrations/${aws_apigatewayv2_integration.get_payment_link_integration.id}"
+}
+
 resource "aws_apigatewayv2_integration" "lambda_integration" {
   api_id          = aws_apigatewayv2_api.wedding_website_api.id
   integration_type = "AWS_PROXY"
@@ -317,6 +323,13 @@ resource "aws_apigatewayv2_integration" "post_confirmacao_integration" {
   api_id             = aws_apigatewayv2_api.wedding_website_api.id
   integration_type   = "AWS_PROXY"
   integration_uri    = aws_lambda_function.post_confirmacao.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_integration" "get_payment_link_integration" {
+  api_id             = aws_apigatewayv2_api.wedding_website_api.id
+  integration_type   = "AWS_PROXY"
+  integration_uri    = aws_lambda_function.get_payment_link.invoke_arn
   integration_method = "POST"
 }
 
@@ -357,6 +370,14 @@ resource "aws_lambda_permission" "allow_post_confirmacao" {
   statement_id  = "AllowPostConfirmacao"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.post_confirmacao.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.wedding_website_api.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "allow_get_payment_link" {
+  statement_id  = "AllowGetPaymentLink"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get_payment_link.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.wedding_website_api.execution_arn}/*/*"
 }
