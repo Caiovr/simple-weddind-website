@@ -32,8 +32,7 @@ def get_AWS_secrets():
 
 def lambda_handler(event, context):
     # Parse input from API Gateway
-    #body = json.loads(event['body'])
-    body = event['body']
+    body = json.loads(event['body'])
 
     secrets = get_AWS_secrets()
     
