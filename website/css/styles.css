@@ -290,6 +290,7 @@ footer {
     box-sizing: border-box;
     padding: 0 10px;
     text-align: center;
+    min-width: 250px;
 }
 
 /* Responsividade */
@@ -301,7 +302,7 @@ footer {
 
 @media (min-width: 992px) {
     .carrossel-item {
-        flex: 0 0 33.333%;
+        flex: 0 0 25%;
     }
 }
 
@@ -323,7 +324,7 @@ footer {
 .presente-box-carrossel img {
     width: 100%;
     height: 200px; /* Altura fixa para todas as imagens */
-    object-fit: cover; /* Garante que as imagens cubram o espaço sem distorcer */
+    object-fit: contain; /* Garante que as imagens cubram o espaço sem distorcer */
     border-radius: 10px;
     margin-bottom: 15px;
 }
