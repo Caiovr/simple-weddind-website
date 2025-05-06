@@ -52,18 +52,25 @@
         
         /* Fix for white space and menu alignment */
         html, body {
-            overflow-x: hidden;
+            /*overflow-x: hidden;*/
             width: 100%;
             position: relative;
         }
 
         @media (max-width: 768px) {
-            
             /* Ensure menu items don't get cut off */
             .navbar-nav {
                 margin: 0;
             }
+
+            .row {
+                margin-right: 0;
+                margin-left: 0;
+            }
         }
+
+        /* Debugging (temporary) */
+        /* * { outline: 1px solid red; } */
         
     </style>
 </head>
