@@ -909,7 +909,7 @@
                 });
         });
 
-        // Handle form submission via AJAX
+        // Handle form submission
         $('#confirmacao-form').submit(function (event) {
             event.preventDefault(); // Prevent default form submission
 
@@ -927,28 +927,45 @@
                 presencas.push(presenca); // Add the same attendance value for all selected
             });
 
-            // Send POST request with confirmation data
-            $.ajax({
-                url: 'https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-confirmacao',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    ids: ids,
-                    convidados: nomes,
-                    presenca: presencas,
-                }),
-                success: function (response) {
-                    alert('Confirmação enviada com sucesso!');
+            // Prepare the data
+            const payload = {
+                ids: ids,
+                convidados: nomes,
+                presenca: presencas,
+            };
 
-                    // Clear form fields
-                    $('#confirmacao-form')[0].reset(); // Reset the form
-                    $('#convidados').val(null).trigger('change'); // Clear Select2
+            // Send POST request using Fetch API
+            fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-confirmacao', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                error: function (error) {
-                    console.error('Erro ao enviar confirmação:', error);
-                    alert('Ocorreu um erro ao enviar a confirmação. Tente novamente.');
-                },
+                body: JSON.stringify(payload),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Confirmação enviada com sucesso!');
+
+                // Clear form fields
+                const form = document.getElementById('confirmacao-form');
+                if (form) form.reset();
+
+                // Clear Select2 input
+                const select = $('#convidados');
+                if (select.length) select.val(null).trigger('change');
+            })
+            .catch(error => {
+                console.error('Erro ao enviar confirmação:', error);
+                alert('Ocorreu um erro ao enviar a confirmação. Tente novamente.');
             });
+
         });
 
     </script>
