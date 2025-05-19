@@ -675,25 +675,59 @@
             const carrosselItems = document.querySelectorAll('.carrossel-item');
             const totalItems = carrosselItems.length;
             let currentIndex = 0;
+            let itemsPerView = 1; // Será atualizado com base no tamanho da tela
+
+            // Atualiza quantos itens são visíveis com base no tamanho da tela
+            function updateItemsPerView() {
+                if (window.innerWidth >= 992) {
+                    itemsPerView = 4;
+                } else if (window.innerWidth >= 768) {
+                    itemsPerView = 2;
+                } else {
+                    itemsPerView = 1;
+                }
+            }
+
+            // Função para mover o carrossel
+            const moveCarrossel = (direction) => {
+                updateItemsPerView();
+                
+                if (direction === 'next') {
+                    currentIndex = (currentIndex + 1) % (totalItems - itemsPerView + 1);
+                } else if (direction === 'prev') {
+                    currentIndex = (currentIndex - 1 + (totalItems - itemsPerView + 1)) % (totalItems - itemsPerView + 1);
+                }
+                
+                // Garante que não vamos além do último item
+                if (currentIndex > totalItems - itemsPerView) {
+                    currentIndex = totalItems - itemsPerView;
+                }
+                
+                // Garante que não vamos antes do primeiro item
+                if (currentIndex < 0) {
+                    currentIndex = 0;
+                }
+                
+                const offset = -currentIndex * (100 / itemsPerView);
+                carrosselInner.style.transform = `translateX(${offset}%)`;
+            };
+
+            // Atualiza a quantidade de itens visíveis quando a janela é redimensionada
+            window.addEventListener('resize', () => {
+                updateItemsPerView();
+                moveCarrossel('none'); // Recalcula a posição
+            });
 
             // Botões de navegação
             const btnPrev = document.querySelector('.carrossel-btn-prev');
             const btnNext = document.querySelector('.carrossel-btn-next');
 
-            // Função para mover o carrossel
-            const moveCarrossel = (direction) => {
-                if (direction === 'next') {
-                    currentIndex = (currentIndex + 1) % totalItems;
-                } else if (direction === 'prev') {
-                    currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-                }
-                const offset = -currentIndex * 100;
-                carrosselInner.style.transform = `translateX(${offset}%)`;
-            };
-
-            // Eventos para botões
             btnPrev.addEventListener('click', () => moveCarrossel('prev'));
             btnNext.addEventListener('click', () => moveCarrossel('next'));
+
+            // Inicializa o carrossel
+            updateItemsPerView();
+            moveCarrossel('none');
 
             // Suporte para mouse drag (desktop)
             let isDragging = false;
