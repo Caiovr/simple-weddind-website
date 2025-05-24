@@ -556,25 +556,25 @@
                 imagem: './assets/final-de-semana-sem-visitas.jpg',
                 titulo: 'Final de Semana Sem Visitas',
                 descricao: 'Vale uma desculpa pronta!',
-                valor: '100.00'
+                valor: '150.00'
             },
             {
                 imagem: './assets/noite-do-nao-vamos-cozinhar-hoje.jpg',
                 titulo: 'Noite do "Não vamos cozinhar hoje"',
                 descricao: 'Sushi e coquinha gelada liberado.',
-                valor: '150.00'
+                valor: '180.00'
             },
             {
                 imagem: './assets/ritual-do-perdao.jpg',
                 titulo: 'Ritual do Perdão',
                 descricao: 'Para quando alguém esquecer a toalha molhada na cama.',
-                valor: '100.00'
+                valor: '150.00'
             },
             {
                 imagem: './assets/curso-sim-amor.jpg',
                 titulo: 'Curso "Sim, amor, você está certa"',
                 descricao: 'Diploma garantido!',
-                valor: '100.00'
+                valor: '150.00'
             },
             {
                 imagem: './assets/kit-me-deixa-quieto.jpg',
@@ -586,7 +586,7 @@
                 imagem: './assets/mini-spa-dos-pes.jpg',
                 titulo: 'Mini Spa dos Pés',
                 descricao: 'Pés cansados de tanto dançar na Zumba',
-                valor: '150.00'
+                valor: '160.00'
             },
             {
                 imagem: './assets/manutencao-do-wi-fi.jpg',
@@ -597,14 +597,14 @@
             {
                 imagem: './assets/fundo-lava-loucas.jpg',
                 titulo: 'Fundo da Lava-Louças',
-                descricao: 'Acabando com futuras brigas por louça suja',
+                descricao: 'Acabando com futuras brigas por louça suja.',
                 valor: '200.00'
             },
             {
                 imagem: './assets/fundo-bebe.jpg',
                 titulo: 'Fundo do Bebê (ou pet)',
                 descricao: 'Ou planta, ainda decidindo.',
-                valor: '100.00'
+                valor: '150.00'
             },
             {
                 imagem: './assets/cofrinho-da-viagem-a-dois.jpg',
@@ -924,8 +924,23 @@
                     // Abrir modal
                     $('#pixModal').modal('show');
 
-                    // (Opcional) Envie nome/mensagem para o backend se desejar registrar
-                    // fetch('YOUR_BACKEND_ENDPOINT', { method: 'POST', body: JSON.stringify({ nome, mensagem, valor }) });
+                    let titulo = this.getAttribute('data-titulo') || 'Presente Personalizado';
+                    // Envie nome/mensagem para o backend se desejar registrar
+                    fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-compra', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            amount: parseFloat(valor),
+                            item_title: titulo,
+                            currency: 'BRL',
+                            payment_type: 'PIX',
+                            name: nome,
+                            message: mensagem,
+                            timestamp: new Date().toISOString()
+                        })
+                    });
                 });
             });
 
@@ -1034,15 +1049,16 @@
                                 success_url: 'https://jadsmilaecaio.com.br/success',
                                 failure_url: 'https://jadsmilaecaio.com.br/failure',
                                 pending_url: 'https://jadsmilaecaio.com.br/pending',
-                                nome: nome,
-                                mensagem: mensagem
+                                name: nome,
+                                message: mensagem,
+                                timestamp: Date.now() // <-- Adicionado timestamp
                             })
                         });
 
                         const data = await response.json();
                         
                         if (data.init_point) {
-                            window.open(data.init_point, '_blank');
+                            window.location.href = data.init_point;
                         } else {
                             throw new Error('No payment link received');
                         }
@@ -1054,6 +1070,23 @@
                         spinner.remove();
                         btn.style.display = '';
                     }
+                    
+                    fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-compra', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            amount: parseFloat(valor),
+                            item_title: titulo,
+                            currency: 'BRL',
+                            payment_type: 'Mercado Pago',
+                            name: nome,
+                            message: mensagem,
+                            timestamp: new Date().toISOString()
+                        })
+                    });
+
                 });
             });
 
@@ -1088,7 +1121,7 @@
                     // Add options dynamically
                     data.forEach(convidado => {
                         convidadosSelect.append(new Option(convidado.convidado, convidado.id));
-                        convidadosMap.set(convidado.id, convidado.convidado); // Add to Map
+                        convidadosMap.set(String(convidado.id), convidado.convidado);
                     });
 
                     // Show Form
@@ -1119,8 +1152,8 @@
 
             convidadosSelecionadosIds.forEach(id => {
                 ids.push(id);
-                nomes.push(convidadosMap.get(id)); // Get name by ID
-                presencas.push(presenca); // Add the same attendance value for all selected
+                nomes.push(convidadosMap.get(String(id)) || '');
+                presencas.push(presenca);
             });
 
             // Prepare the data
@@ -1128,6 +1161,7 @@
                 ids: ids,
                 convidados: nomes,
                 presenca: presencas,
+                timestamp: new Date().toISOString() // Adiciona o datetime atual
             };
 
             // Send POST request using Fetch API
