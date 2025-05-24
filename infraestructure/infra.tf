@@ -57,7 +57,7 @@ resource "aws_iam_policy" "lambda_policy" {
           "sqs:DeleteMessage",
           "sqs:GetQueueAttributes"
         ],
-        Resource = aws_sqs_queue.confirmation_queue.arn
+        Resource = aws_sqs_queue.write_queue.arn
       },
       {
         Effect = "Allow",
@@ -104,29 +104,29 @@ resource "aws_iam_role_policy_attachment" "lambda_role_attach" {
 }
 
 # SQS Queue
-resource "aws_sqs_queue" "confirmation_dlq" {
-  name                      = "wedding-confirmation-dlq"
+resource "aws_sqs_queue" "write_dlq" {
+  name                      = "wedding-write-dlq"
   delay_seconds             = 0
   message_retention_seconds = 1209600  # 14 days
 }
 
-resource "aws_sqs_queue" "confirmation_queue" {
-  name = "wedding-confirmation-queue"
+resource "aws_sqs_queue" "write_queue" {
+  name = "wedding-write-queue"
   delay_seconds             = 0
   #max_message_size          = 262144  # 256 KB
   #message_retention_seconds = 1209600  # 14 days
   visibility_timeout_seconds = 180  # Adjust to fit your processing time
   redrive_policy            = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.confirmation_dlq.arn
+    deadLetterTargetArn = aws_sqs_queue.write_dlq.arn
     maxReceiveCount     = 5  # Number of retry attempts before sending to DLQ
   })
 }
 
 # Zip Lambda files
-data "archive_file" "lambda_save_confirmation_zip" {
+data "archive_file" "lambda_save_messages_zip" {
   type         = "zip"
-  source_file  = "${path.module}/../lambda/saveConfirmations.py"
-  output_path  = "${path.module}/../lambda/saveConfirmations.zip"
+  source_file  = "${path.module}/../lambda/saveMessages.py"
+  output_path  = "${path.module}/../lambda/saveMessages.zip"
 }
 
 data "archive_file" "lambda_get_convidados_zip" {
@@ -171,9 +171,9 @@ resource "aws_lambda_function" "get_convidados" {
   }
 }
 
-# Lambda Function: post-confirmacao
-resource "aws_lambda_function" "post_confirmacao" {
-  function_name    = "post-confirmacao"
+# Lambda Function: send-to-sqs
+resource "aws_lambda_function" "send_to_sqs" {
+  function_name    = "send-to-sqs"
   role             = aws_iam_role.lambda_role.arn
   handler          = "sendToSQS.lambda_handler"
   runtime          = "python3.12"
@@ -183,25 +183,25 @@ resource "aws_lambda_function" "post_confirmacao" {
 
   environment {
     variables = {
-      SQS_QUEUE = aws_sqs_queue.confirmation_queue.url
+      SQS_WRITE_QUEUE = aws_sqs_queue.write_queue.url
     }
   }
 }
 
-# Lambda saveConfirmations
-resource "aws_lambda_function" "save_confirmations" {
-  function_name    = "save-confirmations"
+# Lambda saveMessages
+resource "aws_lambda_function" "save_messages" {
+  function_name    = "save-messages"
   role             = aws_iam_role.lambda_role.arn
-  handler          = "saveConfirmations.lambda_handler"
+  handler          = "saveMessages.lambda_handler"
   runtime          = "python3.12"
   timeout          = 30
-  filename         = data.archive_file.lambda_save_confirmation_zip.output_path
-  source_code_hash = data.archive_file.lambda_save_confirmation_zip.output_base64sha256
+  filename         = data.archive_file.lambda_save_messages_zip.output_path
+  source_code_hash = data.archive_file.lambda_save_messages_zip.output_base64sha256
 
   environment {
     variables = {
       S3_BUCKET = aws_s3_bucket.sqlite_db_bucket.id
-      SQS_QUEUE = aws_sqs_queue.confirmation_queue.url
+      SQS_QUEUE = aws_sqs_queue.write_queue.url
       DB_NAME = "wedding.db"
     }
   }
@@ -273,7 +273,7 @@ resource "aws_iam_role_policy" "apigateway_sqs_policy" {
       {
         Effect = "Allow",
         Action = "sqs:SendMessage",
-        Resource = aws_sqs_queue.confirmation_queue.arn
+        Resource = aws_sqs_queue.write_queue.arn
       }
     ]
   })
@@ -290,6 +290,12 @@ resource "aws_apigatewayv2_route" "post_confirmacao_route" {
   api_id    = aws_apigatewayv2_api.wedding_website_api.id
   route_key = "POST /post-confirmacao"
   target    = "integrations/${aws_apigatewayv2_integration.post_confirmacao_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "post_compra_route" {
+  api_id    = aws_apigatewayv2_api.wedding_website_api.id
+  route_key = "POST /post-compra"
+  target    = "integrations/${aws_apigatewayv2_integration.post_compra_integration.id}"
 }
 
 resource "aws_apigatewayv2_route" "options_route" {
@@ -322,7 +328,14 @@ resource "aws_apigatewayv2_integration" "get_convidados_integration" {
 resource "aws_apigatewayv2_integration" "post_confirmacao_integration" {
   api_id             = aws_apigatewayv2_api.wedding_website_api.id
   integration_type   = "AWS_PROXY"
-  integration_uri    = aws_lambda_function.post_confirmacao.invoke_arn
+  integration_uri    = aws_lambda_function.send_to_sqs.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_integration" "post_compra_integration" {
+  api_id             = aws_apigatewayv2_api.wedding_website_api.id
+  integration_type   = "AWS_PROXY"
+  integration_uri    = aws_lambda_function.send_to_sqs.invoke_arn
   integration_method = "POST"
 }
 
@@ -366,10 +379,10 @@ resource "aws_lambda_permission" "allow_get_convidados" {
   source_arn    = "${aws_apigatewayv2_api.wedding_website_api.execution_arn}/*/*"
 }
 
-resource "aws_lambda_permission" "allow_post_confirmacao" {
-  statement_id  = "AllowPostConfirmacao"
+resource "aws_lambda_permission" "allow_send_to_sqs" {
+  statement_id  = "AllowSendToSqs"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.post_confirmacao.function_name
+  function_name = aws_lambda_function.send_to_sqs.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.wedding_website_api.execution_arn}/*/*"
 }
@@ -384,8 +397,8 @@ resource "aws_lambda_permission" "allow_get_payment_link" {
 
 # Lambda trigger event for sqs
 resource "aws_lambda_event_source_mapping" "sqs_trigger" {
-  event_source_arn = aws_sqs_queue.confirmation_queue.arn
-  function_name    = aws_lambda_function.save_confirmations.arn
+  event_source_arn = aws_sqs_queue.write_queue.arn
+  function_name    = aws_lambda_function.save_messages.arn
   batch_size       = 5
   enabled          = true
 
