@@ -29,6 +29,7 @@ def lambda_handler(event, context):
                 "item_title": body["item_title"],
                 "currency": body.get("currency"),
                 "payment_type": body.get("payment_type"),
+                "transaction_id": body.get("transaction_id"),
                 "name": body.get("name"),
                 "message": body.get("message"),
                 "timestamp": body.get("timestamp")

@@ -865,6 +865,9 @@
                         currency: 'BRL'
                     });
 
+                    // Gera um transaction_id único
+                    const transactionId = Date.now().toString();
+
                     // Gerar payload PIX (formato BR Code)
                     const valorStr = valor.toString(); // already toFixed(2)
                     const valorLength = valorStr.length.toString().padStart(2, '0'); // ensures 2-digit length field
@@ -936,6 +939,7 @@
                             item_title: titulo,
                             currency: 'BRL',
                             payment_type: 'PIX',
+                            transaction_id: transactionId || '',
                             name: nome,
                             message: mensagem,
                             timestamp: new Date().toISOString()
@@ -1036,6 +1040,7 @@
                         }
                     }
 
+                    let mp_transaction_id = '';
                     try {
                         const response = await fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/get-payment-link', {
                             method: 'POST',
@@ -1046,9 +1051,9 @@
                                 amount: parseFloat(valor),
                                 item_title: titulo,
                                 currency: 'BRL',
-                                success_url: 'https://jadsmilaecaio.com.br/success',
-                                failure_url: 'https://jadsmilaecaio.com.br/failure',
-                                pending_url: 'https://jadsmilaecaio.com.br/pending',
+                                success_url: 'https://jadsmilaecaio.com.br/success.html',
+                                failure_url: 'https://jadsmilaecaio.com.br/failure.html',
+                                pending_url: 'https://jadsmilaecaio.com.br/pending.html',
                                 name: nome,
                                 message: mensagem,
                                 timestamp: Date.now() // <-- Adicionado timestamp
@@ -1056,8 +1061,29 @@
                         });
 
                         const data = await response.json();
+                        console.log('Resposta do get-payment-link:', data); // <-- Adicionado
                         
                         if (data.init_point) {
+                            // Se o link de pagamento foi gerado com sucesso
+                            // Adiciona o ID da transação ao payload
+                            mp_transaction_id = data.id;
+                            fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-compra', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    amount: parseFloat(valor),
+                                    item_title: titulo,
+                                    currency: 'BRL',
+                                    payment_type: 'Mercado Pago',
+                                    transaction_id: mp_transaction_id || "", // Adicione o ID da transação, se disponível
+                                    name: nome,
+                                    message: mensagem,
+                                    timestamp: new Date().toISOString()
+                                })
+                            });
+                            // Redireciona para o link de pagamento
                             window.location.href = data.init_point;
                         } else {
                             throw new Error('No payment link received');
@@ -1070,22 +1096,6 @@
                         spinner.remove();
                         btn.style.display = '';
                     }
-                    
-                    fetch('https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod/post-compra', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            amount: parseFloat(valor),
-                            item_title: titulo,
-                            currency: 'BRL',
-                            payment_type: 'Mercado Pago',
-                            name: nome,
-                            message: mensagem,
-                            timestamp: new Date().toISOString()
-                        })
-                    });
 
                 });
             });

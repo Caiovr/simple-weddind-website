@@ -71,6 +71,7 @@ def lambda_handler(event, context):
                     titulo = body.get("item_title", "Presente de Casamento")
                     valor = body.get("amount", 0)
                     tipo_pagamento = body.get("payment_type", "Não Informado")
+                    transaction_id = body.get("transaction_id", "")
                     nome = body.get("name", "Não Informado")
                     mensagem = body.get("message", "Não Informado")
                     timestamp = body.get("timestamp")
@@ -79,18 +80,18 @@ def lambda_handler(event, context):
                     if timestamp_sqlite:
                         cursor.execute(
                             """
-                            INSERT INTO compras (titulo, valor, tipo_pagamento, nome, mensagem, timestamp)
-                            VALUES (?, ?, ?, ?, ?, ?)
+                            INSERT INTO compras (titulo, valor, tipo_pagamento, transaction_id, nome, mensagem, timestamp)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
                             """,
-                            (titulo, valor, tipo_pagamento, nome, mensagem, timestamp_sqlite)
+                            (titulo, valor, tipo_pagamento, transaction_id, nome, mensagem, timestamp_sqlite)
                         )
                     else:
                         cursor.execute(
                             """
-                            INSERT INTO compras (titulo, valor, tipo_pagamento, nome, mensagem)
-                            VALUES (?, ?, ?, ?, ?)
+                            INSERT INTO compras (titulo, valor, tipo_pagamento, transaction_id, nome, mensagem)
+                            VALUES (?, ?, ?, ?, ?, ?)
                             """,
-                            (titulo, valor, tipo_pagamento, nome, mensagem)
+                            (titulo, valor, tipo_pagamento, transaction_id, nome, mensagem)
                         )
 
                     conn.commit()

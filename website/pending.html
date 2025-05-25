@@ -6,70 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/styles.css">
-    <style>
-        .status-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
-            text-align: center;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        
-        .status-icon {
-            font-size: 80px;
-            color: #ffc107;
-            margin-bottom: 20px;
-        }
-        
-        .btn-return {
-            margin-top: 30px;
-            background: #32BCAD;
-            color: white;
-        }
-        
-        .btn-return:hover {
-            background: #2AA896;
-            color: white;
-        }
-        
-        .status-info {
-            background: #fff8e1;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-    </style>
 </head>
 <body>
     <nav id="topNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#"><i class="ion-ios-analytics-outline"></i> Jadsmila & Caio</a>
+                <a class="navbar-brand page-scroll" href="index.html"><i class="ion-ios-analytics-outline"></i> Jadsmila & Caio</a>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="status-container">
-            <div class="status-icon">
-                <i class="ion-ios-time"></i>
+    <section class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+                <div class="presente-box-carrossel text-center" style="padding:40px 20px;">
+                    <div class="status-icon" style="font-size:90px; color:#ffc107; margin-bottom:20px;">
+                        <i class="ion-ios-time"></i>
+                    </div>
+                    <h2 class="text-primary">Pagamento em Processamento</h2>
+                    <hr class="primary">
+                    <p class="text-muted" style="font-size:18px;">Seu pagamento está sendo processado. Isso pode levar alguns minutos.</p>
+                    <p class="text-muted">Você receberá um e-mail com a confirmação assim que o pagamento for aprovado.</p>
+                    <p class="text-muted">Se não receber confirmação em 24 horas, entre em contato conosco.</p>
+                    <a href="index.html#presentes" class="btn btn-pagamento btn-pix" style="margin-top:20px;">Voltar ao Site</a>
+                </div>
             </div>
-            <h2>Pagamento em Processamento</h2>
-            <p>Seu pagamento está sendo processado. Isso pode levar alguns minutos.</p>
-            
-            <div class="status-info">
-                <p>Você receberá um e-mail com a confirmação assim que o pagamento for aprovado.</p>
-                <p>Se não receber confirmação em 24 horas, entre em contato conosco.</p>
-            </div>
-            
-            <a href="index.html#presentes" class="btn btn-lg btn-return">Voltar ao Site</a>
         </div>
-    </div>
+    </section>
 
+        <!-- Footer -->
     <footer class="text-center">
         <div class="container">
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+                    <h4>Em caso de dúvidas, entre em contato</h4>
+                    <p>Fale conosco pelo WhatsApp:</p>
+                    <div class="whatsapp-buttons">
+                        <a href="https://wa.me/5527997017776" class="btn btn-success whatsapp-btn" target="_blank">
+                            <i class="ion-social-whatsapp"></i> Falar com Jadsmila
+                        </a>
+                        <a href="https://wa.me/5527996034422" class="btn btn-success whatsapp-btn" target="_blank">
+                            <i class="ion-social-whatsapp"></i> Falar com Caio
+                        </a>
+                    </div>
+                </div>
+            </div>
             <p class="copyright">Jadsmila & Caio - 16 de Agosto de 2025</p>
         </div>
     </footer>
