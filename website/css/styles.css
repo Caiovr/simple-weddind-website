@@ -478,6 +478,36 @@ header {
     color: white;
 }
 
+
+.header-date-top-right {
+    position: absolute;
+    top: 110px;
+    right: 16%;
+    z-index: 2;
+    color: #fff;
+    font-size: 2em;
+    text-shadow: 0 4px 16px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.9), 0 1px 0 #000;
+    /* font-family: 'Cursive', cursive; */
+    letter-spacing: 1px;
+    margin: 0;
+    text-align: right;
+    pointer-events: none;
+}
+@media (max-width: 768px) {
+    .header-date-top-right {
+        top: 60px;
+        right: 10px;
+        font-size: 1.2em;
+        width: 28%;
+    }
+}
+
+@media (min-width: 768px) {
+    .header-title-top-right {
+        font-size: 4em;
+    }
+}
+
 /* For smaller screens where the image might not fill the space */
 @media (max-aspect-ratio: 16/9) {
     .header-image {
