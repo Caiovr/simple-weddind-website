@@ -1126,6 +1126,9 @@
                 .then(data => {
                     const convidadosSelect = $('#convidados');
 
+                    // Ordena alfabeticamente pelo nome do convidado
+                    data.sort((a, b) => a.convidado.localeCompare(b.convidado, 'pt-BR', { sensitivity: 'base' }));
+
                     // Add options dynamically
                     data.forEach(convidado => {
                         convidadosSelect.append(new Option(convidado.convidado, convidado.id));
