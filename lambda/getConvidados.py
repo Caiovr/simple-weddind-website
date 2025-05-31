@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     cursor = conn.cursor()
 
     # Busca os convidados
-    cursor.execute("SELECT id, convidado FROM convidados")
+    cursor.execute("SELECT id, convidado FROM convidados ORDER BY id ASC")
     convidados = [{"id": row[0], "convidado": row[1]} for row in cursor.fetchall()]
 
     conn.close()
