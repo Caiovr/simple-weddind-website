@@ -261,13 +261,12 @@
                         <div class="pix-valor" id="pixValor">R$ 0,00</div>
                     </div>
                     <button class="copy-btn" id="copyPixBtn">Copiar Chave PIX</button>
-                    <button class="copy-btn" id="copyValorBtn">Copiar Valor</button>
                     <div class="copy-success" id="copySuccess">Copiado com sucesso!</div>
                     <div class="pix-instructions">
                         <p>1. Abra seu aplicativo de banco</p>
                         <p>2. Selecione pagar via PIX</p>
                         <p>3. Escaneie o QR code ou cole a chave PIX</p>
-                        <p>4. Confirme o valor e finalize o pagamento</p>
+                        <p>4. Confirme o valor e destinatário (Caio Vianna Rizzo) e finalize o pagamento</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1136,7 +1135,7 @@
                         convidadosSelect.append(new Option(convidado.convidado, convidado.id));
                         convidadosMap.set(String(convidado.id), convidado.convidado);
                     });
-                    
+
                     convidadosSelect.val(null);
 
                     // Show Form
