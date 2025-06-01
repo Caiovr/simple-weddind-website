@@ -1,0 +1,149 @@
+<!-- filepath: c:\Users\caiov\Desktop\Projeto Site Casamento\simple-weddind-website\website\upload.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Fotos | Casamento Jadsmila & Caio</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/animate.min.css" />
+    <link rel="stylesheet" href="./css/ionicons.min.css" />
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/navbar.css" />
+    <style>
+        body {
+            background: #ffdddd !important;
+        }
+        .upload-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 40px 30px 30px 30px;
+            margin: 100px auto 40px auto;
+            max-width: 420px;
+        }
+        .upload-section h2 {
+            color: #d4af37;
+            margin-bottom: 25px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .upload-section label {
+            color: #222;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            font-weight: 600;
+            transition: all .3s;
+        }
+        .btn-primary:hover, .btn-primary:focus {
+            background: #d4af37;
+            color: #fff;
+            border-color: #d4af37;
+        }
+        #uploadStatus {
+            margin-top: 20px;
+        }
+        .upload-icon {
+            font-size: 60px;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 600px) {
+            .upload-section {
+                padding: 25px 10px 20px 10px;
+                margin: 70px 5px 20px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="topNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand page-scroll" href="index.html"><i class="ion-ios-analytics-outline"></i> Jadsmila & Caio</a>
+            </div>
+            <div class="navbar-collapse collapse" id="bs-navbar">
+                <ul class="nav navbar-nav">
+                    <li><a class="page-scroll" href="confirmacao.html">Confirme sua presença</a></li>
+                    <li><a class="page-scroll" href="index.html">Inicio</a></li>
+                    <li><a class="page-scroll" href="#two">Os noivos</a></li>
+                    <li><a class="page-scroll" href="#three">Fotos</a></li>
+                    <li><a class="page-scroll" href="presentes.html">Presentes</a></li>
+                    <li><a class="page-scroll" href="#four">Informações</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="upload-section text-center animated fadeInDown">
+            <div class="upload-icon">
+                <i class="ion-ios-cloud-upload-outline"></i>
+            </div>
+            <h2>Envie sua Foto</h2>
+            <form id="uploadForm" enctype="multipart/form-data" autocomplete="off">
+                <div class="form-group">
+                    <label for="photoInput">Escolha uma foto para enviar:</label>
+                    <input type="file" class="form-control" id="photoInput" name="photo" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Enviar Foto</button>
+            </form>
+            <div id="uploadStatus"></div>
+        </div>
+    </div>
+
+    <footer class="text-center" style="margin-top:40px;">
+        <div class="container">
+            <p class="copyright">Jadsmila & Caio - 16 de Agosto de 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const uploadStatus = document.getElementById('uploadStatus');
+            uploadStatus.innerHTML = '<div class="alert alert-info">Enviando foto...</div>';
+
+            const file = document.getElementById('photoInput').files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result.split(',')[1];
+                fetch('SUA_URL_API_GATEWAY/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fileName: file.name,
+                        fileType: file.type,
+                        fileContent: base64
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        uploadStatus.innerHTML = '<div class="alert alert-success">Foto enviada com sucesso!</div>';
+                        document.getElementById('uploadForm').reset();
+                    } else {
+                        uploadStatus.innerHTML = '<div class="alert alert-danger">Erro ao enviar a foto. Tente novamente.</div>';
+                    }
+                })
+                .catch(error => {
+                    uploadStatus.innerHTML = '<div class="alert alert-danger">Erro ao enviar a foto. Tente novamente.</div>';
+                    console.error('Error:', error);
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            // Tenta abrir o seletor de arquivos automaticamente
+            document.getElementById('photoInput').click();
+        });
+    </script>
+</body>
+</html>
