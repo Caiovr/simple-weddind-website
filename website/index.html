@@ -1105,11 +1105,11 @@
         // RSVP Form section
         const convidadosMap = new Map(); // Map to store guest IDs and names
 
-        // Initialize Select2 for multiple selection
-        $('#convidados').select2({
-            placeholder: "Pesquise e selecione os convidados",
-            allowClear: true,
-        });
+        // // Initialize Select2 for multiple selection
+        // $('#convidados').select2({
+        //     placeholder: "Pesquise e selecione os convidados",
+        //     allowClear: true,
+        // });
 
         // Button click handler to load the form
         $('#loadFormButton').click(function() {
@@ -1131,13 +1131,23 @@
                     data.sort((a, b) => a.convidado.localeCompare(b.convidado, 'pt-BR', { sensitivity: 'base' }));
 
                     // Add options dynamically
+                    convidadosSelect.empty();
                     data.forEach(convidado => {
                         convidadosSelect.append(new Option(convidado.convidado, convidado.id));
                         convidadosMap.set(String(convidado.id), convidado.convidado);
                     });
+                    
+                    convidadosSelect.val(null);
 
                     // Show Form
                     $('#confirmacao-form').show();
+
+                    // Initialize Select2 for multiple selection
+                    convidadosSelect.select2({
+                        placeholder: "Pesquise e selecione os convidados",
+                        allowClear: true,
+                        width: '100%'
+                    });
 
                     // Hide loading indicator
                     $('#loading-convidados').hide();
@@ -1212,7 +1222,7 @@
 
     </script>
 
-    <script src="./js/jquery.min.js" defer></script>
+    <!-- <script src="./js/jquery.min.js" defer></script> -->
     <script src="./js/bootstrap.min.js" defer></script>
     <script src="./js/jquery.easing.min.js" defer></script>
     <script src="./js/wow.js" defer></script>
