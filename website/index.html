@@ -952,12 +952,6 @@
                 showCopySuccess();
             });
             
-            document.getElementById('copyValorBtn').addEventListener('click', function() {
-                const valor = document.getElementById('pixValor').textContent.replace('R$', '').trim();
-                copyToClipboard(valor.replace('.', ','));
-                showCopySuccess();
-            });
-            
             function showCopySuccess() {
                 const copySuccess = document.getElementById('copySuccess');
                 copySuccess.style.display = 'block';
