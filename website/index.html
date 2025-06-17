@@ -652,6 +652,7 @@
 
             const btnPix = document.createElement('button');
             btnPix.className = 'btn-pagamento btn-pix';
+            btnPix.setAttribute('data-titulo', presente.titulo);
             btnPix.setAttribute('data-valor', presente.valor);
             btnPix.textContent = 'Pagar com PIX';
 
@@ -688,8 +689,8 @@
                     <input type="text" class="input-nome" maxlength="40" placeholder="Seu nome (opcional)" style="margin-bottom:5px;width:100%;padding:4px;">
                     <textarea class="input-mensagem" maxlength="240" placeholder="Deixe uma mensagem para os noivos!" rows="2" style="width:100%;padding:4px;"></textarea>
                 </div>
-                <button class="btn-pagamento btn-pix btn-personalizado">Pagar com PIX</button>
-                <button class="btn-pagamento btn-mercado-pago btn-personalizado">Pagar com Mercado Pago</button>
+                <button class="btn-pagamento btn-pix btn-personalizado" data-titulo="Presente Personalizado">Pagar com PIX</button>
+                <button class="btn-pagamento btn-mercado-pago btn-personalizado" data-titulo="Presente Personalizado">Pagar com Mercado Pago</button>
             </div>
         `;
         carrosselInner.appendChild(personalizadoDiv);
