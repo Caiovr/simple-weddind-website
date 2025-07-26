@@ -52,10 +52,94 @@
             color: #d4af37;
             margin-bottom: 10px;
         }
+        .gallery-photo-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            margin-bottom: 20px;
+            padding: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .gallery-photo-card:hover {
+            transform: scale(1.04);
+            box-shadow: 0 6px 24px rgba(212,175,55,0.18);
+        }
+        .gallery-photo-card img {
+            border-radius: 8px;
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: filter 0.2s;
+        }
+        /* Lightbox styles */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.2s;
+        }
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+        .lightbox-overlay:after {
+            content: "✕";
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 2.5rem;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 10001;
+            text-shadow: 0 2px 8px #000;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         @media (max-width: 600px) {
             .upload-section {
                 padding: 25px 10px 20px 10px;
                 margin: 70px 5px 20px 5px;
+            }
+        }
+        #gallery .gallery-photo-card {
+            margin-bottom: 24px;
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #gallery .gallery-photo-card img {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+        }
+        @media (max-width: 991px) {
+            #gallery .gallery-photo-card { height: 220px; }
+            #gallery .gallery-photo-card img { height: 180px; }
+        }
+        @media (max-width: 600px) {
+            #gallery .gallery-photo-card { height: 180px; }
+            #gallery .gallery-photo-card img { height: 140px; }
+        }
+        @media (min-width: 768px) {
+            .gallery-container {
+                margin-top: 90px;
+            }
+        }
+        @media (max-width: 767px) {
+            .gallery-container {
+                margin-top: 70px;
             }
         }
     </style>
@@ -80,6 +164,12 @@
         </div>
     </nav>
 
+    <!-- Galeria de Fotos -->
+    <div class="container gallery-container" style="max-width: 1200px;">
+        <h3 class="text-center" style="color:#d4af37; font-weight:700; margin:40px 0 25px 0;">Galeria de Fotos Enviadas</h3>
+        <div id="gallery" class="row" style="margin-bottom: 40px;"></div>
+    </div>
+
     <div class="container">
         <div class="upload-section text-center animated fadeInDown">
             <div class="upload-icon">
@@ -89,7 +179,7 @@
             <form id="uploadForm" enctype="multipart/form-data" autocomplete="off">
                 <div class="form-group">
                     <label for="photoInput">Escolha uma foto para enviar:</label>
-                    <input type="file" class="form-control" id="photoInput" name="photo" accept="image/*" required>
+                    <input type="file" class="form-control" id="photoInput" name="photo" accept="image/*" required multiple>
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg btn-block">Enviar Foto</button>
             </form>
@@ -107,42 +197,143 @@
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            const formData = new FormData(this);
+            const files = document.getElementById('photoInput').files;
             const uploadStatus = document.getElementById('uploadStatus');
-            uploadStatus.innerHTML = '<div class="alert alert-info">Enviando foto...</div>';
+            if (files.length === 0) {
+                uploadStatus.innerHTML = '<div class="alert alert-danger">Selecione pelo menos uma foto.</div>';
+                return;
+            }
 
-            const file = document.getElementById('photoInput').files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64 = e.target.result.split(',')[1];
-                fetch('SUA_URL_API_GATEWAY/upload', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fileName: file.name,
-                        fileType: file.type,
-                        fileContent: base64
+            uploadStatus.innerHTML = '<div class="alert alert-info">Enviando fotos...</div>';
+
+            let uploaded = 0;
+            let errors = 0;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result.split(',')[1];
+                    fetch('SUA_URL_API_GATEWAY/upload', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fileName: file.name,
+                            fileType: file.type,
+                            fileContent: base64
+                        })
                     })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        uploadStatus.innerHTML = '<div class="alert alert-success">Foto enviada com sucesso!</div>';
-                        document.getElementById('uploadForm').reset();
-                    } else {
-                        uploadStatus.innerHTML = '<div class="alert alert-danger">Erro ao enviar a foto. Tente novamente.</div>';
-                    }
-                })
-                .catch(error => {
-                    uploadStatus.innerHTML = '<div class="alert alert-danger">Erro ao enviar a foto. Tente novamente.</div>';
-                    console.error('Error:', error);
-                });
-            };
-            reader.readAsDataURL(file);
+                    .then(response => {
+                        if (response.ok) {
+                            uploaded++;
+                        } else {
+                            errors++;
+                        }
+                        if (uploaded + errors === files.length) {
+                            if (errors === 0) {
+                                uploadStatus.innerHTML = '<div class="alert alert-success">Todas as fotos foram enviadas com sucesso!</div>';
+                                document.getElementById('uploadForm').reset();
+                                loadGallery(); // Atualiza a galeria após upload
+                            } else {
+                                uploadStatus.innerHTML = `<div class="alert alert-warning">${uploaded} foto(s) enviada(s) com sucesso, ${errors} falhou(aram).</div>`;
+                                loadGallery(); // Atualiza a galeria mesmo se houver erros
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        errors++;
+                        if (uploaded + errors === files.length) {
+                            uploadStatus.innerHTML = `<div class="alert alert-warning">${uploaded} foto(s) enviada(s) com sucesso, ${errors} falhou(aram).</div>`;
+                            loadGallery();
+                        }
+                        console.error('Error:', error);
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
         });
 
+        // // Função para carregar e exibir a galeria de fotos
+        // function loadGallery() {
+        //     const gallery = document.getElementById('gallery');
+        //     gallery.innerHTML = '<div class="col-12">Carregando fotos...</div>';
+        //     fetch('SUA_URL_API_GATEWAY/list') // Troque para o endpoint correto da sua API
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (!Array.isArray(data) || data.length === 0) {
+        //                 gallery.innerHTML = '<div class="col-12">Nenhuma foto enviada ainda.</div>';
+        //                 return;
+        //             }
+        //             gallery.innerHTML = '';
+        //             data.forEach(url => {
+        //                 const col = document.createElement('div');
+        //                 col.className = 'col-xs-6 col-sm-4 col-md-3';
+        //                 col.innerHTML = `<img src="${url}" alt="Foto enviada" class="img-thumbnail" style="margin-bottom:15px;max-width:100%;">`;
+        //                 gallery.appendChild(col);
+        //             });
+        //         })
+        //         .catch(() => {
+        //             gallery.innerHTML = '<div class="col-12">Erro ao carregar a galeria.</div>';
+        //         });
+        // }
+
+        function loadGallery() {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '<div class="col-12">Carregando fotos...</div>';
+
+            // Mock de URLs de imagens usando Picsum Photos
+            const mockUrls = [
+                'https://picsum.photos/id/1015/600/400',
+                'https://picsum.photos/id/1016/600/400',
+                'https://picsum.photos/id/1025/600/400',
+                'https://picsum.photos/id/1035/600/400',
+                'https://picsum.photos/id/1045/600/400',
+                'https://picsum.photos/id/1055/600/400'
+            ];
+
+            setTimeout(() => {
+                gallery.innerHTML = '';
+                mockUrls.forEach(url => {
+                    const col = document.createElement('div');
+                    col.className = 'col-12 col-sm-6 col-md-4 col-lg-3 d-flex';
+                    col.innerHTML = `
+                        <div class="gallery-photo-card w-100" onclick="openLightbox('${url}')">
+                            <img src="${url}" alt="Foto enviada por convidado">
+                        </div>
+                    `;
+                    gallery.appendChild(col);
+                });
+            }, 800); // Simula carregamento
+        }
+
+        // Lightbox simples
+        window.openLightbox = function(url) {
+            // Remove qualquer lightbox existente
+            const old = document.getElementById('lightbox-overlay');
+            if (old) old.remove();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'lightbox-overlay';
+            overlay.id = 'lightbox-overlay';
+            overlay.innerHTML = `<img src="${url}" alt="Foto em destaque">`;
+            overlay.onclick = function(e) {
+                // Fecha se clicar fora da imagem ou no X
+                if (e.target === overlay || e.target === overlay.querySelector('img')) {
+                    overlay.remove();
+                }
+            };
+            document.body.appendChild(overlay);
+            // Fecha ao apertar ESC
+            document.addEventListener('keydown', function escListener(ev) {
+                if (ev.key === "Escape") {
+                    overlay.remove();
+                    document.removeEventListener('keydown', escListener);
+                }
+            });
+        };
+
         window.addEventListener('DOMContentLoaded', function() {
-            // Tenta abrir o seletor de arquivos automaticamente
             document.getElementById('photoInput').click();
+            loadGallery();
         });
     </script>
 </body>
