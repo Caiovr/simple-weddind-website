@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulta de Dados</title>
     <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .counter {
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -29,6 +39,7 @@
 
         <section id="convidados" class="query-section">
             <h2>Lista de Convidados</h2>
+            <div class="counter" id="convidados-counter">0 convidados encontrados</div>
             <table>
                 <thead>
                     <tr>
@@ -44,6 +55,7 @@
 
         <section id="confirmacoes" class="query-section" style="display:none;">
             <h2>Confirmações de Presença</h2>
+            <div class="counter" id="confirmacoes-counter">0 confirmações encontradas</div>
             <table>
                 <thead>
                     <tr>
@@ -61,6 +73,7 @@
 
         <section id="compras" class="query-section" style="display:none;">
             <h2>Compras Realizadas</h2>
+            <div class="counter" id="compras-counter">0 compras encontradas</div>
             <table>
                 <thead>
                     <tr>
@@ -81,6 +94,7 @@
 
         <section id="confirmacoes-pendentes" class="query-section" style="display:none;">
             <h2>Confirmações Pendentes</h2>
+            <div class="counter" id="pendentes-counter">0 confirmações pendentes encontradas</div>
             <table>
                 <thead>
                     <tr>
@@ -102,21 +116,48 @@
     </footer>
 
     <script>
-        async function fetchData(endpoint, elementId) {
-            const response = await fetch(`https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod${endpoint}`);
-            const data = await response.json();
-            const tbody = document.getElementById(elementId);
-            tbody.innerHTML = ''; // Limpa o conteúdo anterior
-
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                Object.values(item).forEach(value => {
-                    const cell = document.createElement('td');
-                    cell.textContent = value;
-                    row.appendChild(cell);
+        async function fetchData(endpoint, elementId, counterId) {
+            try {
+                const response = await fetch(`https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod${endpoint}`);
+                const data = await response.json();
+                const tbody = document.getElementById(elementId);
+                const counter = document.getElementById(counterId);
+                
+                tbody.innerHTML = ''; // Limpa o conteúdo anterior
+                
+                // Atualiza o contador
+                const count = data.length;
+                counter.textContent = `${count} ${getCounterText(endpoint, count)}`;
+                
+                // Preenche a tabela com os dados
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    Object.values(item).forEach(value => {
+                        const cell = document.createElement('td');
+                        cell.textContent = value;
+                        row.appendChild(cell);
+                    });
+                    tbody.appendChild(row);
                 });
-                tbody.appendChild(row);
-            });
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                document.getElementById(counterId).textContent = 'Erro ao carregar dados';
+            }
+        }
+
+        function getCounterText(endpoint, count) {
+            switch(endpoint) {
+                case '/get-confirmacoes':
+                    return count === 1 ? 'confirmação encontrada' : 'confirmações encontradas';
+                case '/get-compras':
+                    return count === 1 ? 'compra encontrada' : 'compras encontradas';
+                case '/get-pending-confirmations':
+                    return count === 1 ? 'confirmação pendente encontrada' : 'confirmações pendentes encontradas';
+                case '/get-convidados':
+                    return count === 1 ? 'convidado encontrado' : 'convidados encontrados';
+                default:
+                    return 'itens encontrados';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -132,23 +173,20 @@
                 // Carrega os dados apenas da tabela selecionada
                 switch(selected) {
                     case 'confirmacoes':
-                        fetchData('/get-confirmacoes', 'confirmacoes-body');
+                        fetchData('/get-confirmacoes', 'confirmacoes-body', 'confirmacoes-counter');
                         break;
                     case 'compras':
-                        fetchData('/get-compras', 'compras-body');
+                        fetchData('/get-compras', 'compras-body', 'compras-counter');
                         break;
                     case 'confirmacoes-pendentes':
-                        fetchData('/get-pending-confirmations', 'pendentes-body');
+                        fetchData('/get-pending-confirmations', 'pendentes-body', 'pendentes-counter');
                         break;
                     case 'convidados':
-                        fetchData('/get-convidados', 'convidados-body');
+                        fetchData('/get-convidados', 'convidados-body', 'convidados-counter');
                         break;
                 }
             }
         });
-
-        // Remova esta linha para não mostrar nada ao carregar:
-        // document.getElementById('querySelect').dispatchEvent(new Event('change'));
     </script>
 </body>
 </html>
