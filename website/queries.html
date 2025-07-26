@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Dados</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <header>
+        <h1>Consulta de Dados do Casamento</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="queries.html">Consultas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <label for="querySelect"><strong>Selecione a consulta:</strong></label>
+        <select id="querySelect">
+            <option value="" selected disabled>Selecione...</option>
+            <option value="confirmacoes">Confirmações</option>
+            <option value="compras">Compras</option>
+            <option value="confirmacoes-pendentes">Pendentes</option>
+            <option value="convidados">Convidados</option>
+        </select>
+
+        <section id="convidados" class="query-section">
+            <h2>Lista de Convidados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Convidado</th>
+                    </tr>
+                </thead>
+                <tbody id="convidados-body">
+                    <!-- Os dados dos convidados serão inseridos aqui via JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="confirmacoes" class="query-section" style="display:none;">
+            <h2>Confirmações de Presença</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID do Convidado</th>
+                        <th>Nome do Convidado</th>
+                        <th>Presença</th>
+                        <th>Data da Confirmação</th>
+                    </tr>
+                </thead>
+                <tbody id="confirmacoes-body">
+                    <!-- Os dados das confirmações serão inseridos aqui via JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="compras" class="query-section" style="display:none;">
+            <h2>Compras Realizadas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Valor</th>
+                        <th>Tipo de Pagamento</th>
+                        <th>Nome</th>
+                        <th>Mensagem</th>
+                        <th>Data da Compra</th>
+                    </tr>
+                </thead>
+                <tbody id="compras-body">
+                    <!-- Os dados das compras serão inseridos aqui via JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="confirmacoes-pendentes" class="query-section" style="display:none;">
+            <h2>Confirmações Pendentes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Convidado</th>
+                        <th>Origem</th>
+                        <th>Telefone</th>
+                        <th>Presença</th>
+                    </tr>
+                </thead>
+                <tbody id="pendentes-body">
+                    <!-- Os dados das confirmações pendentes serão inseridos aqui via JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Casamento de Caio e Jadsmila. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        async function fetchData(endpoint, elementId) {
+            const response = await fetch(`https://1rhr2d2dtk.execute-api.us-east-1.amazonaws.com/prod${endpoint}`);
+            const data = await response.json();
+            const tbody = document.getElementById(elementId);
+            tbody.innerHTML = ''; // Limpa o conteúdo anterior
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                Object.values(item).forEach(value => {
+                    const cell = document.createElement('td');
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Esconde todas as seções ao carregar
+            document.querySelectorAll('.query-section').forEach(sec => sec.style.display = 'none');
+        });
+
+        document.getElementById('querySelect').addEventListener('change', function() {
+            document.querySelectorAll('.query-section').forEach(sec => sec.style.display = 'none');
+            const selected = this.value;
+            if (selected) {
+                document.getElementById(selected).style.display = '';
+                // Carrega os dados apenas da tabela selecionada
+                switch(selected) {
+                    case 'confirmacoes':
+                        fetchData('/get-confirmacoes', 'confirmacoes-body');
+                        break;
+                    case 'compras':
+                        fetchData('/get-compras', 'compras-body');
+                        break;
+                    case 'confirmacoes-pendentes':
+                        fetchData('/get-pending-confirmations', 'pendentes-body');
+                        break;
+                    case 'convidados':
+                        fetchData('/get-convidados', 'convidados-body');
+                        break;
+                }
+            }
+        });
+
+        // Remova esta linha para não mostrar nada ao carregar:
+        // document.getElementById('querySelect').dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>

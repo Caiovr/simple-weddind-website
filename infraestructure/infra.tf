@@ -303,7 +303,7 @@ resource "aws_iam_role_policy" "apigateway_sqs_policy" {
   })
 }
 
-# Routes for API Gateway
+# Rotas GET
 resource "aws_apigatewayv2_route" "get_convidados_route" {
   api_id    = aws_apigatewayv2_api.wedding_website_api.id
   route_key = "GET /get-convidados"
@@ -313,19 +313,19 @@ resource "aws_apigatewayv2_route" "get_convidados_route" {
 resource "aws_apigatewayv2_route" "get_confirmacoes_route" {
   api_id    = aws_apigatewayv2_api.wedding_website_api.id
   route_key = "GET /get-confirmacoes"
-  target    = "integrations/${aws_apigatewayv2_integration.get_convidados_integration.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.get_confirmacoes_integration.id}"
 }
 
 resource "aws_apigatewayv2_route" "get_pending_confirmations_route" {
   api_id    = aws_apigatewayv2_api.wedding_website_api.id
   route_key = "GET /get-pending-confirmations"
-  target    = "integrations/${aws_apigatewayv2_integration.get_convidados_integration.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.get_pending_confirmations_integration.id}"
 }
 
 resource "aws_apigatewayv2_route" "get_compras_route" {
   api_id    = aws_apigatewayv2_api.wedding_website_api.id
   route_key = "GET /get-compras"
-  target    = "integrations/${aws_apigatewayv2_integration.get_convidados_integration.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.get_compras_integration.id}"
 }
 
 resource "aws_apigatewayv2_route" "post_confirmacao_route" {
@@ -344,6 +344,12 @@ resource "aws_apigatewayv2_route" "options_route" {
   api_id    = aws_apigatewayv2_api.wedding_website_api.id
   route_key = "OPTIONS /get-convidados"
   target = "integrations/${aws_apigatewayv2_integration.get_convidados_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "options_route_get_confirmacoes" {
+  api_id    = aws_apigatewayv2_api.wedding_website_api.id
+  route_key = "OPTIONS /get-confirmacoes"
+  target = "integrations/${aws_apigatewayv2_integration.get_confirmacoes_integration.id}"
 }
 
 resource "aws_apigatewayv2_route" "get_payment_link_route" {
@@ -437,6 +443,14 @@ resource "aws_lambda_permission" "allow_get_convidados" {
   statement_id  = "AllowGetConvidados"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.get_convidados.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.wedding_website_api.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "allow_get_queries" {
+  statement_id  = "AllowGetQueries"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get_queries.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.wedding_website_api.execution_arn}/*/*"
 }

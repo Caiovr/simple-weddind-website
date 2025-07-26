@@ -4,6 +4,7 @@ import json
 import os
 
 def lambda_handler(event, context):
+    print(event)
     # Configurações
     s3_bucket = os.environ['S3_BUCKET']
     db_name = os.environ['DB_NAME']
@@ -17,7 +18,7 @@ def lambda_handler(event, context):
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
 
-    endpoint = event["rawPath"]
+    endpoint = event["resource"]
 
     match endpoint:
         case  "/get-convidados":
